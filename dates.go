@@ -1,5 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
+//
+// v1.1.0
 
 package helpers
 
