@@ -61,13 +61,13 @@ func IsURL(str string) bool {
 	return err == nil && len(u.Scheme) > 0 && len(u.Host) > 0
 }
 
-// isIPv4 проверяет, является ли предоставленная строка действительным IPv4-адресом.
+// IsIPv4 проверяет, является ли предоставленная строка действительным IPv4-адресом.
 func IsIPv4(ip string) bool {
 	parsedIP := net.ParseIP(ip)
 	return parsedIP != nil && parsedIP.To4() != nil
 }
 
-// isIPv6 проверяет, является ли предоставленная строка действительным IPv6-адресом.
+// IsIPv6 проверяет, является ли предоставленная строка действительным IPv6-адресом.
 func IsIPv6(ip string) bool {
 	parsedIP := net.ParseIP(ip)
 	return parsedIP != nil && parsedIP.To16() != nil && parsedIP.To4() == nil
