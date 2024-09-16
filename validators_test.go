@@ -172,3 +172,61 @@ func TestIsURL(t *testing.T) {
 		})
 	}
 }
+
+func TestIsIPv4(t *testing.T) {
+	type args struct {
+		ip string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{name: "1", args: args{ip: "192.168.0.1"}, want: true},
+		{name: "2", args: args{ip: "255.255.255.255"}, want: true},
+		{name: "3", args: args{ip: "0.0.0.0"}, want: true},
+		{name: "4", args: args{ip: "127.0.0.1"}, want: true},
+		{name: "5", args: args{ip: "256.256.256.256"}, want: false},
+		{name: "6", args: args{ip: "192.168.0"}, want: false},
+		{name: "7", args: args{ip: "192.168.0.1.1"}, want: false},
+		{name: "8", args: args{ip: "abc.def.ghi.jkl"}, want: false},
+		{name: "9", args: args{ip: "::1"}, want: false},
+		{name: "10", args: args{ip: "192.168.0.256"}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsIPv4(tt.args.ip); got != tt.want {
+				t.Errorf("IsIPv4() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIsIPv6(t *testing.T) {
+	type args struct {
+		ip string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{name: "1", args: args{ip: "::1"}, want: true},
+		{name: "2", args: args{ip: "2001:db8::ff00:42:8329"}, want: true},
+		{name: "3", args: args{ip: "fe80::1ff:fe23:4567:890a"}, want: true},
+		{name: "4", args: args{ip: "::"}, want: true},
+		{name: "5", args: args{ip: "1200::AB00:1234::2552:7777:1313"}, want: false},
+		{name: "6", args: args{ip: "1200::AB00:1234:O000:2552:7777:1313"}, want: false},
+		{name: "7", args: args{ip: "192.168.0.1"}, want: false},
+		{name: "8", args: args{ip: "2001:db8:85a3::8a2e:370:7334"}, want: true},
+		{name: "9", args: args{ip: "12345::"}, want: false},
+		{name: "10", args: args{ip: "1::1:1:1:1:1:1"}, want: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsIPv6(tt.args.ip); got != tt.want {
+				t.Errorf("IsIPv6() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

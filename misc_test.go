@@ -75,9 +75,9 @@ func TestUniqueString(t *testing.T) {
 		input    []string
 		expected []string
 	}{
-		{"6", []string{"apple", "banana", "apple", "cherry", "banana"}, []string{"apple", "banana", "cherry"}},
-		{"7", []string{"apple", "banana", "cherry"}, []string{"apple", "banana", "cherry"}},
-		{"8", []string{"apple", "apple", "apple"}, []string{"apple"}},
+		{"1", []string{"apple", "banana", "apple", "cherry", "banana"}, []string{"apple", "banana", "cherry"}},
+		{"2", []string{"apple", "banana", "cherry"}, []string{"apple", "banana", "cherry"}},
+		{"3", []string{"apple", "apple", "apple"}, []string{"apple"}},
 	}
 
 	for _, tt := range tests {

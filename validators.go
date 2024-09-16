@@ -4,6 +4,7 @@
 package helpers
 
 import (
+	"net"
 	"net/url"
 	"regexp"
 	"time"
@@ -16,7 +17,7 @@ var (
 	isValidHexColorPattern    = regexp.MustCompile(`^#?([A-Fa-f\d]{3}|[A-Fa-f\d]{6})$`)
 )
 
-// IsValidSQLDate проверяет, что строка имеет формат SQL DATE и является валидной датой
+// IsValidSQLDate проверяет, что строка имеет формат SQL DATE и является валидной датой.
 func IsValidSQLDate(d string) bool {
 	if !isValidSQLDatePattern.MatchString(d) {
 		return false
@@ -27,7 +28,7 @@ func IsValidSQLDate(d string) bool {
 	return err == nil
 }
 
-// IsValidSQLDateTime проверяет, что строка имеет формат SQL DATETIME и является валидной датой и временем
+// IsValidSQLDateTime проверяет, что строка имеет формат SQL DATETIME и является валидной датой и временем.
 func IsValidSQLDateTime(d string) bool {
 	if !isValidSQLDateTimePattern.MatchString(d) {
 		return false
@@ -38,7 +39,7 @@ func IsValidSQLDateTime(d string) bool {
 	return err == nil
 }
 
-// IsValidSQLTime проверяет, что строка имеет формат SQL TIME и является валидным временем
+// IsValidSQLTime проверяет, что строка имеет формат SQL TIME и является валидным временем.
 func IsValidSQLTime(d string) bool {
 	if !isValidSQLTimePattern.MatchString(d) {
 		return false
@@ -49,13 +50,25 @@ func IsValidSQLTime(d string) bool {
 	return err == nil
 }
 
-// IsValidHexColor проверяет, является ли строка валидным HEX-кодом цвета
+// IsValidHexColor проверяет, является ли строка валидным HEX-кодом цвета.
 func IsValidHexColor(color string) bool {
 	return isValidHexColorPattern.MatchString(color)
 }
 
-// IsURL проверяет валидность ссылки
+// IsURL проверяет, является ли переданная строка валидной URL-ссылкой.
 func IsURL(str string) bool {
 	u, err := url.Parse(str)
 	return err == nil && len(u.Scheme) > 0 && len(u.Host) > 0
+}
+
+// isIPv4 проверяет, является ли предоставленная строка действительным IPv4-адресом.
+func IsIPv4(ip string) bool {
+	parsedIP := net.ParseIP(ip)
+	return parsedIP != nil && parsedIP.To4() != nil
+}
+
+// isIPv6 проверяет, является ли предоставленная строка действительным IPv6-адресом.
+func IsIPv6(ip string) bool {
+	parsedIP := net.ParseIP(ip)
+	return parsedIP != nil && parsedIP.To16() != nil && parsedIP.To4() == nil
 }

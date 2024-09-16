@@ -15,13 +15,13 @@ import (
 type StringCharSet int
 
 const (
-	Digits StringCharSet = iota
-	Lowercase
-	Uppercase
-	Letters
-	LettersAndDigits
-	LettersDigitsAndSpecials
-	LettersAndSpecials
+	Digits                   StringCharSet = iota // Только цифры
+	Lowercase                                     // Только строчные буквы
+	Uppercase                                     // Только заглавные буквы
+	Letters                                       // Только буквы (заглавные и строчные)
+	LettersAndDigits                              // Буквы и цифры
+	LettersAndSpecials                            // Буквы и специальные символы
+	LettersDigitsAndSpecials                      // Буквы, цифры и специальные символы
 )
 
 // RandomMD5 генерирует случайный MD5-хеш.
@@ -96,10 +96,10 @@ func RandomString(length int, charSetType StringCharSet) string {
 		availableChars = letters
 	case LettersAndDigits:
 		availableChars = append(letters, digits...)
-	case LettersDigitsAndSpecials:
-		availableChars = append(letters, append(digits, specials...)...)
 	case LettersAndSpecials:
 		availableChars = append(letters, specials...)
+	case LettersDigitsAndSpecials:
+		availableChars = append(letters, append(digits, specials...)...)
 	}
 
 	// Инициализируем новый источник случайных чисел
