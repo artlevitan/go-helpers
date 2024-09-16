@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 
-package random
+package helpers
 
 import (
 	"testing"
@@ -80,65 +80,65 @@ func TestRandomSHA512(t *testing.T) {
 
 // Тест на корректный диапазон
 func TestRandomIntRange(t *testing.T) {
-	min := 10
-	max := 20
+	minVal := 10
+	maxVal := 20
 
 	for i := 0; i < 1000; i++ {
-		result := RandomInt(min, max)
-		if result < min || result > max {
-			t.Errorf("Число %d вне диапазона [%d, %d]", result, min, max)
+		result := RandomInt(minVal, maxVal)
+		if result < minVal || result > maxVal {
+			t.Errorf("Число %d вне диапазона [%d, %d]", result, minVal, maxVal)
 		}
 	}
 }
 
 // Тест на работу с отрицательными значениями
 func TestRandomIntNegativeRange(t *testing.T) {
-	min := -20
-	max := -10
+	minVal := -20
+	maxVal := -10
 
 	for i := 0; i < 1000; i++ {
-		result := RandomInt(min, max)
-		if result < min || result > max {
-			t.Errorf("Число %d вне диапазона [%d, %d]", result, min, max)
+		result := RandomInt(minVal, maxVal)
+		if result < minVal || result > maxVal {
+			t.Errorf("Число %d вне диапазона [%d, %d]", result, minVal, maxVal)
 		}
 	}
 }
 
-// Тест на корректную работу, если min больше max
+// Тест на корректную работу, если minVal больше maxVal
 func TestRandomIntMinGreaterThanMax(t *testing.T) {
-	min := 20
-	max := 10
+	minVal := 20
+	maxVal := 10
 
 	for i := 0; i < 1000; i++ {
-		result := RandomInt(min, max)
-		if result < max || result > min {
-			t.Errorf("Число %d вне диапазона [%d, %d] при min > max", result, max, min)
+		result := RandomInt(minVal, maxVal)
+		if result < maxVal || result > minVal {
+			t.Errorf("Число %d вне диапазона [%d, %d] при minVal > maxVal", result, maxVal, minVal)
 		}
 	}
 }
 
-// Тест на одинаковые значения min и max
+// Тест на одинаковые значения minVal и maxVal
 func TestRandomIntMinEqualsMax(t *testing.T) {
-	min := 10
-	max := 10
+	minVal := 10
+	maxVal := 10
 
 	for i := 0; i < 100; i++ {
-		result := RandomInt(min, max)
-		if result != min {
-			t.Errorf("При min = max ожидается %d, получено %d", min, result)
+		result := RandomInt(minVal, maxVal)
+		if result != minVal {
+			t.Errorf("При minVal = maxVal ожидается %d, получено %d", minVal, result)
 		}
 	}
 }
 
 // Тест на корректную генерацию чисел за короткое время
 func TestRandomIntTimeVariance(t *testing.T) {
-	min := 1
-	max := 5
+	minVal := 1
+	maxVal := 5
 
 	// Проверим, что сгенерированные числа разные при многократном вызове функции
 	results := make(map[int]bool)
 	for i := 0; i < 100; i++ {
-		result := RandomInt(min, max)
+		result := RandomInt(minVal, maxVal)
 		results[result] = true
 	}
 

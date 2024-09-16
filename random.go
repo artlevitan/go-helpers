@@ -1,13 +1,12 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 
-package random
+package helpers
 
 import (
 	"strconv"
 	"time"
 
-	"github.com/artlevitan/go-helpers/hashes"
 	"github.com/google/uuid"
 	"golang.org/x/exp/rand"
 )
@@ -29,25 +28,25 @@ const (
 // RandomMD5 генерирует случайный MD5-хеш.
 func RandomMD5() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return hashes.MD5Hash(timestamp)
+	return MD5Hash(timestamp)
 }
 
 // RandomSHA1 генерирует случайный SHA1-хеш.
 func RandomSHA1() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return hashes.SHA1Hash(timestamp)
+	return SHA1Hash(timestamp)
 }
 
 // RandomSHA256 генерирует случайный SHA256-хеш.
 func RandomSHA256() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return hashes.SHA256Hash(timestamp)
+	return SHA256Hash(timestamp)
 }
 
 // RandomSHA512 генерирует случайный SHA512-хеш.
 func RandomSHA512() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return hashes.SHA512Hash(timestamp)
+	return SHA512Hash(timestamp)
 }
 
 // RandomInt возвращает случайное целое число в диапазоне от min до max включительно.
