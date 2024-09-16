@@ -7,6 +7,35 @@ import (
 	"testing"
 )
 
+func TestByteCountSI(t *testing.T) {
+	type args struct {
+		b int64
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"1", args{0}, "0 B"},
+		{"2", args{999}, "999 B"},
+		{"3", args{1023}, "1.02 kB"},
+		{"4", args{1024}, "1.02 kB"},
+		{"5", args{8192}, "8.19 kB"},
+		{"6", args{1000000}, "1.00 MB"},
+		{"7", args{1500000}, "1.50 MB"},
+		{"8", args{1000000000}, "1.00 GB"},
+		{"9", args{1500000000}, "1.50 GB"},
+		{"10", args{1000000000000}, "1.00 TB"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ByteCountSI(tt.args.b); got != tt.want {
+				t.Errorf("ByteCountSI() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestItemExists(t *testing.T) {
 	tests := []struct {
 		name   string
