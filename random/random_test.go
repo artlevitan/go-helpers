@@ -1,0 +1,289 @@
+// Copyright 2023-2024, Appercase LLC. All rights reserved.
+// https://www.appercase.ru/
+
+package random
+
+import (
+	"testing"
+	"unicode"
+
+	"github.com/google/uuid"
+)
+
+func TestRandomMD5(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
+		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := RandomMD5()
+			if len(got) != 32 {
+				t.Errorf("RandomMD5() = %v, length = %d, want length 32", got, len(got))
+			}
+		})
+	}
+}
+
+func TestRandomSHA1(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
+		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := RandomSHA1()
+			if len(got) != 40 {
+				t.Errorf("RandomSHA1() = %v, length = %d, want length 40", got, len(got))
+			}
+		})
+	}
+}
+
+func TestRandomSHA256(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
+		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := RandomSHA256()
+			if len(got) != 64 {
+				t.Errorf("RandomSHA256() = %v, length = %d, want length 64", got, len(got))
+			}
+		})
+	}
+}
+
+func TestRandomSHA512(t *testing.T) {
+	tests := []struct {
+		name string
+	}{
+		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
+		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := RandomSHA512()
+			if len(got) != 128 {
+				t.Errorf("RandomSHA512() = %v, length = %d, want length 128", got, len(got))
+			}
+		})
+	}
+}
+
+// Тест на корректный диапазон
+func TestRandomIntRange(t *testing.T) {
+	min := 10
+	max := 20
+
+	for i := 0; i < 1000; i++ {
+		result := RandomInt(min, max)
+		if result < min || result > max {
+			t.Errorf("Число %d вне диапазона [%d, %d]", result, min, max)
+		}
+	}
+}
+
+// Тест на работу с отрицательными значениями
+func TestRandomIntNegativeRange(t *testing.T) {
+	min := -20
+	max := -10
+
+	for i := 0; i < 1000; i++ {
+		result := RandomInt(min, max)
+		if result < min || result > max {
+			t.Errorf("Число %d вне диапазона [%d, %d]", result, min, max)
+		}
+	}
+}
+
+// Тест на корректную работу, если min больше max
+func TestRandomIntMinGreaterThanMax(t *testing.T) {
+	min := 20
+	max := 10
+
+	for i := 0; i < 1000; i++ {
+		result := RandomInt(min, max)
+		if result < max || result > min {
+			t.Errorf("Число %d вне диапазона [%d, %d] при min > max", result, max, min)
+		}
+	}
+}
+
+// Тест на одинаковые значения min и max
+func TestRandomIntMinEqualsMax(t *testing.T) {
+	min := 10
+	max := 10
+
+	for i := 0; i < 100; i++ {
+		result := RandomInt(min, max)
+		if result != min {
+			t.Errorf("При min = max ожидается %d, получено %d", min, result)
+		}
+	}
+}
+
+// Тест на корректную генерацию чисел за короткое время
+func TestRandomIntTimeVariance(t *testing.T) {
+	min := 1
+	max := 5
+
+	// Проверим, что сгенерированные числа разные при многократном вызове функции
+	results := make(map[int]bool)
+	for i := 0; i < 100; i++ {
+		result := RandomInt(min, max)
+		results[result] = true
+	}
+
+	if len(results) == 1 {
+		t.Errorf("Случайные числа не меняются при многократных вызовах")
+	}
+}
+
+// Тест на проверку корректного формата UUID
+func TestRandomUUIDFormat(t *testing.T) {
+	u := RandomUUID()
+	_, err := uuid.Parse(u)
+	if err != nil {
+		t.Errorf("Неверный формат UUID: %s", u)
+	}
+}
+
+// Тест на уникальность UUID при многократном вызове
+func TestRandomUUIDUniqueness(t *testing.T) {
+	iterations := 1000
+	uuidSet := make(map[string]struct{})
+
+	for i := 0; i < iterations; i++ {
+		u := RandomUUID()
+		if _, exists := uuidSet[u]; exists {
+			t.Errorf("Найден дубликат UUID: %s", u)
+		}
+		uuidSet[u] = struct{}{}
+	}
+}
+
+// Тест на корректную длину возвращаемой строки
+func TestRandomStringLength(t *testing.T) {
+	length := 10
+	result := RandomString(length, Letters)
+	if len(result) != length {
+		t.Errorf("Ожидалось, что длина строки будет %d, но получено %d", length, len(result))
+	}
+}
+
+// Тест на возврат пустой строки при нулевой длине
+func TestRandomStringZeroLength(t *testing.T) {
+	result := RandomString(0, Letters)
+	if result != "" {
+		t.Errorf("Ожидалась пустая строка при длине 0, но получено: %s", result)
+	}
+}
+
+// Тест на возврат пустой строки при отрицательной длине
+func TestRandomStringNegativeLength(t *testing.T) {
+	result := RandomString(-5, Letters)
+	if result != "" {
+		t.Errorf("Ожидалась пустая строка при отрицательной длине, но получено: %s", result)
+	}
+}
+
+// Тест на генерацию строки только из цифр
+func TestRandomStringDigits(t *testing.T) {
+	result := RandomString(10, Digits)
+	for _, char := range result {
+		if !unicode.IsDigit(char) {
+			t.Errorf("Ожидалась строка, содержащая только цифры, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки только из строчных букв
+func TestRandomStringLowercase(t *testing.T) {
+	result := RandomString(10, Lowercase)
+	for _, char := range result {
+		if !unicode.IsLower(char) {
+			t.Errorf("Ожидалась строка, содержащая только строчные буквы, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки только из заглавных букв
+func TestRandomStringUppercase(t *testing.T) {
+	result := RandomString(10, Uppercase)
+	for _, char := range result {
+		if !unicode.IsUpper(char) {
+			t.Errorf("Ожидалась строка, содержащая только заглавные буквы, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки из букв и цифр
+func TestRandomStringLettersAndDigits(t *testing.T) {
+	result := RandomString(10, LettersAndDigits)
+	for _, char := range result {
+		if !(unicode.IsLetter(char) || unicode.IsDigit(char)) {
+			t.Errorf("Ожидалась строка, содержащая только буквы и цифры, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки с буквами, цифрами и специальными символами
+func TestRandomStringLettersDigitsAndSpecials(t *testing.T) {
+	specials := ":;~=+%^*()[]{}/!@#$?"
+	result := RandomString(50, LettersDigitsAndSpecials)
+	valid := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" + specials
+	for _, char := range result {
+		if !unicode.IsLetter(char) && !unicode.IsDigit(char) && !containsRune(valid, char) {
+			t.Errorf("Ожидалась строка, содержащая буквы, цифры или специальные символы, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки с буквами и специальными символами
+func TestRandomStringLettersAndSpecials(t *testing.T) {
+	specials := ":;~=+%^*()[]{}/!@#$?"
+	result := RandomString(50, LettersAndSpecials)
+	letters := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	valid := letters + specials
+
+	for _, char := range result {
+		if !unicode.IsLetter(char) && !containsRune(valid, char) {
+			t.Errorf("Ожидалась строка, содержащая буквы или специальные символы, но найден символ: %c", char)
+		}
+	}
+}
+
+// Тест на генерацию строки с русскими буквами
+func TestRandomStringRussianLetters(t *testing.T) {
+	// Русские буквы: заглавные и строчные
+	russianLowercase := "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+	russianUppercase := "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+	russianLetters := russianUppercase + russianLowercase
+
+	result := RandomString(20, RussianLetters)
+
+	// Проверяем, что строка состоит только из русских букв
+	for _, char := range result {
+		if !containsRune(russianLetters, char) {
+			t.Errorf("Ожидалась строка, содержащая только русские буквы, но найден символ: %c", char)
+		}
+	}
+}
+
+// Вспомогательная функция для проверки наличия символа в строке
+func containsRune(str string, r rune) bool {
+	for _, c := range str {
+		if c == r {
+			return true
+		}
+	}
+	return false
+}

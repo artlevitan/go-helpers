@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestGenerateMD5Hash(t *testing.T) {
+func TestMD5Hash(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -29,14 +29,14 @@ func TestGenerateMD5Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateMD5Hash(tt.args.text); got != tt.want {
-				t.Errorf("GenerateMD5Hash() = %v, want %v", got, tt.want)
+			if got := MD5Hash(tt.args.text); got != tt.want {
+				t.Errorf("MD5Hash() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestGenerateSHA1Hash(t *testing.T) {
+func TestSHA1Hash(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -58,14 +58,14 @@ func TestGenerateSHA1Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateSHA1Hash(tt.args.text); got != tt.want {
-				t.Errorf("GenerateSHA1Hash() = %v, want %v", got, tt.want)
+			if got := SHA1Hash(tt.args.text); got != tt.want {
+				t.Errorf("SHA1Hash() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestGenerateSHA256Hash(t *testing.T) {
+func TestSHA256Hash(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -87,14 +87,14 @@ func TestGenerateSHA256Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateSHA256Hash(tt.args.text); got != tt.want {
-				t.Errorf("GenerateSHA256Hash() = %v, want %v", got, tt.want)
+			if got := SHA256Hash(tt.args.text); got != tt.want {
+				t.Errorf("SHA256Hash() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestGenerateSHA512Hash(t *testing.T) {
+func TestSHA512Hash(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -116,76 +116,8 @@ func TestGenerateSHA512Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := GenerateSHA512Hash(tt.args.text); got != tt.want {
-				t.Errorf("GenerateSHA512Hash() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestGenerateRandomMD5Hash(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
-		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateRandomMD5Hash()
-			if len(got) != 32 {
-				t.Errorf("GenerateRandomMD5Hash() = %v, length = %d, want length 32", got, len(got))
-			}
-		})
-	}
-}
-
-func TestGenerateRandomSHA1Hash(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
-		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateRandomSHA1Hash()
-			if len(got) != 40 {
-				t.Errorf("GenerateRandomSHA1Hash() = %v, length = %d, want length 40", got, len(got))
-			}
-		})
-	}
-}
-
-func TestGenerateRandomSHA256Hash(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
-		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateRandomSHA256Hash()
-			if len(got) != 64 {
-				t.Errorf("GenerateRandomSHA256Hash() = %v, length = %d, want length 64", got, len(got))
-			}
-		})
-	}
-}
-
-func TestGenerateRandomSHA512Hash(t *testing.T) {
-	tests := []struct {
-		name string
-	}{
-		{"test 1"}, {"test 2"}, {"test 3"}, {"test 4"}, {"test 5"},
-		{"test 6"}, {"test 7"}, {"test 8"}, {"test 9"}, {"test 10"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := GenerateRandomSHA512Hash()
-			if len(got) != 128 {
-				t.Errorf("GenerateRandomSHA512Hash() = %v, length = %d, want length 128", got, len(got))
+			if got := SHA512Hash(tt.args.text); got != tt.want {
+				t.Errorf("SHA512Hash() = %v, want %v", got, tt.want)
 			}
 		})
 	}
