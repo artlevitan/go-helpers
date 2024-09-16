@@ -15,6 +15,21 @@ func ItemExists[T comparable](slice []T, item T) bool {
 	return false
 }
 
+// Unique возвращает новый срез, содержащий только уникальные элементы из inputSlice
+func Unique[T comparable](inputSlice []T) []T {
+	seen := make(map[T]bool)
+	unique := []T{}
+
+	for _, item := range inputSlice {
+		if !seen[item] {
+			seen[item] = true
+			unique = append(unique, item)
+		}
+	}
+
+	return unique
+}
+
 // EncodeBase64 шифрует строку в Base64 формат.
 func EncodeBase64(text string) string {
 	return base64.StdEncoding.EncodeToString([]byte(text))

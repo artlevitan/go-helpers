@@ -22,7 +22,6 @@ const (
 	LettersAndDigits
 	LettersDigitsAndSpecials
 	LettersAndSpecials
-	RussianLetters
 )
 
 // RandomMD5 генерирует случайный MD5-хеш.
@@ -82,9 +81,6 @@ func RandomString(length int, charSetType StringCharSet) string {
 	uppercase := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	letters := append(uppercase, lowercase...)
 	specials := []rune(":;~=+%^*()[]{}/!@#$?")
-	russianLowercase := []rune("абвгдеёжзийклмнопрстуфхцчшщъыьэюя")
-	russianUppercase := []rune("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ")
-	russianLetters := append(russianUppercase, russianLowercase...)
 
 	var availableChars []rune
 
@@ -104,8 +100,6 @@ func RandomString(length int, charSetType StringCharSet) string {
 		availableChars = append(letters, append(digits, specials...)...)
 	case LettersAndSpecials:
 		availableChars = append(letters, specials...)
-	case RussianLetters:
-		availableChars = russianLetters
 	}
 
 	// Инициализируем новый источник случайных чисел

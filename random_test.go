@@ -261,23 +261,6 @@ func TestRandomStringLettersAndSpecials(t *testing.T) {
 	}
 }
 
-// Тест на генерацию строки с русскими буквами
-func TestRandomStringRussianLetters(t *testing.T) {
-	// Русские буквы: заглавные и строчные
-	russianLowercase := "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
-	russianUppercase := "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-	russianLetters := russianUppercase + russianLowercase
-
-	result := RandomString(20, RussianLetters)
-
-	// Проверяем, что строка состоит только из русских букв
-	for _, char := range result {
-		if !containsRune(russianLetters, char) {
-			t.Errorf("Ожидалась строка, содержащая только русские буквы, но найден символ: %c", char)
-		}
-	}
-}
-
 // Вспомогательная функция для проверки наличия символа в строке
 func containsRune(str string, r rune) bool {
 	for _, c := range str {

@@ -39,6 +39,64 @@ func TestItemExists(t *testing.T) {
 	}
 }
 
+func TestUniqueInt(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []int
+		expected []int
+	}{
+		{"1", []int{1, 2, 3, 2, 4, 3, 5, 1}, []int{1, 2, 3, 4, 5}},
+		{"2", []int{1, 2, 3, 4, 5}, []int{1, 2, 3, 4, 5}},
+		{"3", []int{1, 1, 1, 1, 1}, []int{1}},
+		{"4", []int{}, []int{}},
+		{"5", []int{1}, []int{1}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Unique(tt.input)
+			if len(got) != len(tt.expected) {
+				t.Errorf("Unique() = %v, want %v", got, tt.expected)
+				return
+			}
+			for i := range got {
+				if got[i] != tt.expected[i] {
+					t.Errorf("Unique() = %v, want %v", got, tt.expected)
+					return
+				}
+			}
+		})
+	}
+}
+
+func TestUniqueString(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []string
+		expected []string
+	}{
+		{"6", []string{"apple", "banana", "apple", "cherry", "banana"}, []string{"apple", "banana", "cherry"}},
+		{"7", []string{"apple", "banana", "cherry"}, []string{"apple", "banana", "cherry"}},
+		{"8", []string{"apple", "apple", "apple"}, []string{"apple"}},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Unique(tt.input)
+			if len(got) != len(tt.expected) {
+				t.Errorf("Unique() = %v, want %v", got, tt.expected)
+				return
+			}
+			for i := range got {
+				if got[i] != tt.expected[i] {
+					t.Errorf("Unique() = %v, want %v", got, tt.expected)
+					return
+				}
+			}
+		})
+	}
+}
+
 func TestEncodeBase64(t *testing.T) {
 	type args struct {
 		text string
