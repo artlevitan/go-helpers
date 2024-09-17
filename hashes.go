@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.4
+// v1.1.5
 
 package helpers
 
@@ -25,13 +25,13 @@ func SHA1(text string) string {
 	return fmt.Sprintf("%x", sha1.Sum([]byte(text)))
 }
 
-// SHA3_256 возвращает SHA3-256 хеш строки.
+// SHA256 возвращает SHA3-256 хеш строки.
 // Хеш представляет собой строку длиной 64 символа в шестнадцатеричном формате.
 func SHA256(text string) string {
 	return fmt.Sprintf("%x", sha3.Sum256([]byte(text)))
 }
 
-// SHA3_512 возвращает SHA3-512 хеш строки.
+// SHA512 возвращает SHA3-512 хеш строки.
 // Хеш представляет собой строку длиной 128 символов в шестнадцатеричном формате.
 func SHA512(text string) string {
 	return fmt.Sprintf("%x", sha3.Sum512([]byte(text)))

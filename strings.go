@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.4
+// v1.1.5
 
 package helpers
 
@@ -89,7 +89,7 @@ func CreateCacheKey(in interface{}) string {
 			_, _ = fmt.Fprintf(&sb, "%d", elem) // Игнорируем ошибку
 		}
 
-	// Обработка других типов с использованием JSON-сериализации
+	// Обработка других типов с использованием JSON
 	default:
 		bytes, err := json.Marshal(v)
 		if err != nil {

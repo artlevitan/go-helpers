@@ -1,16 +1,16 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.4
+// v1.1.5
 
 package helpers
 
 import (
+	"math/rand"
 	"strconv"
 	"time"
 
 	"github.com/google/uuid"
-	"golang.org/x/exp/rand"
 )
 
 // StringCharSet - тип для выбора набора символов
@@ -57,12 +57,11 @@ func RandomInt(min, max int) int {
 		min, max = max, min
 	}
 
-	// Инициализируем новый источник случайных чисел
-	source := rand.NewSource(uint64(time.Now().UnixNano()))
-	r := rand.New(source)
+	// Инициализируем источник случайных чисел
+	rand.NewSource(time.Now().UnixNano())
 
 	// Генерируем случайное число в заданном диапазоне
-	return r.Intn(max-min+1) + min
+	return rand.Intn(max-min+1) + min
 }
 
 // RandomUUID возвращает случайный UUID.
@@ -104,14 +103,13 @@ func RandomString(length int, charSetType StringCharSet) string {
 		availableChars = append(letters, append(digits, specials...)...)
 	}
 
-	// Инициализируем новый источник случайных чисел
-	source := rand.NewSource(uint64(time.Now().UnixNano()))
-	r := rand.New(source)
+	// Инициализируем источник случайных чисел
+	rand.NewSource(time.Now().UnixNano())
 
 	// Создаем слайс для хранения случайных символов
 	buf := make([]rune, length)
 	for i := range buf {
-		buf[i] = availableChars[r.Intn(len(availableChars))]
+		buf[i] = availableChars[rand.Intn(len(availableChars))]
 	}
 	return string(buf)
 }
