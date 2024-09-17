@@ -1,104 +1,74 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
 import (
-	"encoding/json"
-	"fmt"
-	"reflect"
 	"regexp"
 	"strings"
 )
 
 var (
 	clearStringPattern         = regexp.MustCompile(`\s+`)
-	filterLettersPattern       = regexp.MustCompile(`[^a-zA-Zа-яА-Я]+`)
+	clearTextareaPattern       = regexp.MustCompile(`(?:\r?\n){2,}|\r?\n(\s)*`)
+	filterLettersPattern       = regexp.MustCompile(`(?i)[^a-zа-яё]+`)
 	filterDigitsPattern        = regexp.MustCompile(`\D+`)
 	clearHtmlPageStylesPattern = regexp.MustCompile(`(?i)(?:<style>((?:.*?\r?\n?)*)</style>)+|(?:<script>((?:.*?\r?\n?)*)</script>)+|\s+(class="(.*?)")|\s+(style="(.*?)")`)
 	stripTagsPattern           = regexp.MustCompile(`<[^>]+>|<!--.*?-->`)
+	emojiPattern               = regexp.MustCompile(`[\x{1F600}-\x{1F64F}]|` + // Emoticons
+		`[\x{1F300}-\x{1F5FF}]|` + // Misc Symbols and Pictographs
+		`[\x{1F680}-\x{1F6FF}]|` + // Transport and Map Symbols
+		`[\x{2600}-\x{26FF}]|` + // Misc symbols
+		`[\x{2700}-\x{27BF}]|` + // Dingbats
+		`[\x{FE00}-\x{FE0F}]|` + // Variation Selectors
+		`[\x{1F900}-\x{1F9FF}]|` + // Supplemental Symbols and Pictographs
+		`[\x{1F1E6}-\x{1F1FF}]|` + // Flags (regional indicators)
+		`[\x{1FA70}-\x{1FAFF}]|` + // Symbols and Pictographs Extended-A
+		`[\x{200D}]`)
 )
 
 // CutString обрезает строку до заданной длины.
-func CutString(text string, length int) string {
-	runes := []rune(text)
+func CutString(s string, length int) string {
+	runes := []rune(s)
 	if len(runes) > length {
 		return string(runes[:length])
 	}
-	return text
+	return s
 }
 
 // ClearString убирает пробелы с краев строки и заменяет дублирующие пробелы одним пробелом.
-func ClearString(text string) string {
-	text = clearStringPattern.ReplaceAllString(text, " ")
-	return strings.TrimSpace(text)
+func ClearString(s string) string {
+	s = clearStringPattern.ReplaceAllString(s, " ")
+	return strings.TrimSpace(s)
+}
+
+// ClearTextarea форматирует и очищает многострочный текст.
+func ClearTextarea(s string) string {
+	s = strings.TrimSpace(s)
+	return clearTextareaPattern.ReplaceAllString(s, "\n")
 }
 
 // FilterLetters очищает строку от всех символов, кроме букв.
 // Возвращает очищенную строку.
-func FilterLetters(text string) string {
-	text = strings.TrimSpace(text)
-	return filterLettersPattern.ReplaceAllString(text, "")
+func FilterLetters(s string) string {
+	s = strings.TrimSpace(s)
+	return filterLettersPattern.ReplaceAllString(s, "")
 }
 
 // FilterDigits очищает строку от всех символов, кроме цифр.
 // Возвращает очищенную строку.
-func FilterDigits(text string) string {
-	text = strings.TrimSpace(text)
-	return filterDigitsPattern.ReplaceAllString(text, "")
+func FilterDigits(s string) string {
+	s = strings.TrimSpace(s)
+	return filterDigitsPattern.ReplaceAllString(s, "")
 }
 
 // CheckStringLength проверяет, что длина строки находится в заданном диапазоне.
 // Возвращает true, если длина строки в диапазоне [minLength, maxLength], иначе false.
-func CheckStringLength(str string, minLength int, maxLength int) bool {
-	length := len([]rune(str))
+func CheckStringLength(s string, minLength int, maxLength int) bool {
+	length := len([]rune(s))
 	return length >= minLength && length <= maxLength
-}
-
-// CreateCacheKey создает текстовый ключ для кеширования, обрабатывая различные типы данных внутри одной функции.
-func CreateCacheKey(in interface{}) string {
-	if in == nil {
-		return "nil"
-	}
-
-	var sb strings.Builder
-
-	switch v := in.(type) {
-	// Обработка строк
-	case string:
-		sb.WriteString(v)
-
-	// Обработка срезов байтов ([]byte или []uint8)
-	case []byte:
-		sb.WriteString(string(v))
-
-	// Обработка знаковых целочисленных типов
-	case int, int8, int16, int32, int64,
-		uint, uint8, uint16, uint32, uint64:
-		_, _ = fmt.Fprintf(&sb, "%d", v) // Игнорируем ошибку
-
-	// Обработка срезов целочисленных типов
-	case []int, []int8, []int16, []int32, []int64,
-		[]uint, []uint16, []uint32, []uint64:
-		// Используем рефлексию для обработки срезов различных типов
-		rv := reflect.ValueOf(v)
-		for i := 0; i < rv.Len(); i++ {
-			elem := rv.Index(i).Interface()
-			_, _ = fmt.Fprintf(&sb, "%d", elem) // Игнорируем ошибку
-		}
-
-	// Обработка других типов с использованием JSON
-	default:
-		bytes, err := json.Marshal(v)
-		if err != nil {
-			return fmt.Sprintf("error:%v", err)
-		}
-		sb.WriteString(string(bytes))
-	}
-
-	return sb.String()
 }
 
 // SanitizeHTML очищает строку от HTML стилей, тегов и скриптов.
@@ -108,6 +78,14 @@ func SanitizeHTML(s string) string {
 
 	// Удаление HTML тегов
 	s = stripTagsPattern.ReplaceAllString(s, "")
+
+	// Очистка строки от лишних пробелов и переносов строк
+	return ClearString(s)
+}
+
+// RemoveEmojis удаляет Emoji из строки.
+func RemoveEmojis(s string) string {
+	s = emojiPattern.ReplaceAllString(s, "")
 
 	// Очистка строки от лишних пробелов и переносов строк
 	return ClearString(s)

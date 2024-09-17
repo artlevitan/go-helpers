@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
@@ -11,7 +11,7 @@ import (
 
 func TestMD5(t *testing.T) {
 	type args struct {
-		text string
+		s string
 	}
 	tests := []struct {
 		name string
@@ -31,7 +31,7 @@ func TestMD5(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MD5(tt.args.text); got != tt.want {
+			if got := MD5(tt.args.s); got != tt.want {
 				t.Errorf("MD5() = %v, want %v", got, tt.want)
 			}
 		})
@@ -40,7 +40,7 @@ func TestMD5(t *testing.T) {
 
 func TestSHA1(t *testing.T) {
 	type args struct {
-		text string
+		s string
 	}
 	tests := []struct {
 		name string
@@ -60,7 +60,7 @@ func TestSHA1(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA1(tt.args.text); got != tt.want {
+			if got := SHA1(tt.args.s); got != tt.want {
 				t.Errorf("SHA1() = %v, want %v", got, tt.want)
 			}
 		})
@@ -69,7 +69,7 @@ func TestSHA1(t *testing.T) {
 
 func TestSHA256(t *testing.T) {
 	type args struct {
-		text string
+		s string
 	}
 	tests := []struct {
 		name string
@@ -89,7 +89,7 @@ func TestSHA256(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA256(tt.args.text); got != tt.want {
+			if got := SHA256(tt.args.s); got != tt.want {
 				t.Errorf("SHA256() = %v, want %v", got, tt.want)
 			}
 		})
@@ -98,7 +98,7 @@ func TestSHA256(t *testing.T) {
 
 func TestSHA512(t *testing.T) {
 	type args struct {
-		text string
+		s string
 	}
 	tests := []struct {
 		name string
@@ -118,7 +118,7 @@ func TestSHA512(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA512(tt.args.text); got != tt.want {
+			if got := SHA512(tt.args.s); got != tt.want {
 				t.Errorf("SHA512() = %v, want %v", got, tt.want)
 			}
 		})

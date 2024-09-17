@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
@@ -49,22 +49,22 @@ func RoundFloat(val float64, precision int) float64 {
 
 // StringToFloat преобразует строку в float64. Если строка не может быть распознана как число, возвращает 0.
 func StringToFloat(s string) float64 {
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil || math.IsNaN(f) {
+	floatValue, err := strconv.ParseFloat(s, 64)
+	if err != nil || math.IsNaN(floatValue) {
 		return 0
 	}
-	return f
+	return floatValue
 }
 
 // FloatToString преобразует float64 в строку с 8 знаками после запятой.
-func FloatToString(f float64) string {
-	return fmt.Sprintf("%.8f", f)
+func FloatToString(val float64) string {
+	return fmt.Sprintf("%.8f", val)
 }
 
-// MinOrDefault возвращает минимальное из двух чисел, или limit, если number меньше или равен нулю.
-func MinOrDefault(number int, limit int) int {
-	if number <= 0 {
+// MinOrDefault возвращает минимальное из двух чисел, или limit, если num меньше или равен нулю.
+func MinOrDefault(num int, limit int) int {
+	if num <= 0 {
 		return limit
 	}
-	return min(number, limit)
+	return min(num, limit)
 }

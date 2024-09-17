@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
@@ -143,32 +143,32 @@ func TestIsHexColor(t *testing.T) {
 
 func TestIsURL(t *testing.T) {
 	type args struct {
-		str string
+		s string
 	}
 	tests := []struct {
 		name string
 		args args
 		want bool
 	}{
-		{"1", args{str: "http://appercase.ru"}, true},
-		{"2", args{str: "https://appercase.ru"}, true},
-		{"3", args{str: "ftp://appercase.ru"}, true},
-		{"4", args{str: "http//appercase.ru"}, false},
-		{"5", args{str: "appercase.ru"}, false},
-		{"6", args{str: "https://www.example.com/path?query=123"}, true},
-		{"7", args{str: "http://localhost:8080"}, true},
-		{"8", args{str: "http://192.168.1.1"}, true},
-		{"9", args{str: "ftp://192.168.1.1"}, true},
-		{"10", args{str: "https://[::1]"}, true},
-		{"11", args{str: "http://test-domain"}, true},
-		{"12", args{str: "https://example.com:invalid"}, false},
-		{"13", args{str: ""}, false},
-		{"14", args{str: "https://"}, false},
-		{"15", args{str: "https://www.example"}, true},
+		{"1", args{s: "http://appercase.ru"}, true},
+		{"2", args{s: "https://appercase.ru"}, true},
+		{"3", args{s: "ftp://appercase.ru"}, true},
+		{"4", args{s: "http//appercase.ru"}, false},
+		{"5", args{s: "appercase.ru"}, false},
+		{"6", args{s: "https://www.example.com/path?query=123"}, true},
+		{"7", args{s: "http://localhost:8080"}, true},
+		{"8", args{s: "http://192.168.1.1"}, true},
+		{"9", args{s: "ftp://192.168.1.1"}, true},
+		{"10", args{s: "https://[::1]"}, true},
+		{"11", args{s: "http://test-domain"}, true},
+		{"12", args{s: "https://example.com:invalid"}, false},
+		{"13", args{s: ""}, false},
+		{"14", args{s: "https://"}, false},
+		{"15", args{s: "https://www.example"}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsURL(tt.args.str); got != tt.want {
+			if got := IsURL(tt.args.s); got != tt.want {
 				t.Errorf("IsURL() = %v, want %v", got, tt.want)
 			}
 		})

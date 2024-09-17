@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
@@ -46,7 +46,7 @@ func TestIsFloatEqual(t *testing.T) {
 
 func TestRoundFloat(t *testing.T) {
 	type args struct {
-		val       float64
+		num       float64
 		precision int
 	}
 	tests := []struct {
@@ -54,20 +54,20 @@ func TestRoundFloat(t *testing.T) {
 		args args
 		want float64
 	}{
-		{"1", args{val: 1.2345, precision: 2}, 1.23},
-		{"2", args{val: 1.2345, precision: 3}, 1.235},
-		{"3", args{val: 1.2345, precision: 0}, 1},
-		{"4", args{val: 1.9999, precision: 3}, 2},
-		{"5", args{val: -1.2345, precision: 2}, -1.23},
-		{"6", args{val: 0.5555, precision: 2}, 0.56},
-		{"7", args{val: 0.5544, precision: 2}, 0.55},
-		{"8", args{val: 123456.789, precision: 1}, 123456.8},
-		{"9", args{val: -0.0004, precision: 3}, 0},
-		{"10", args{val: 1.1111, precision: 4}, 1.1111},
+		{"1", args{num: 1.2345, precision: 2}, 1.23},
+		{"2", args{num: 1.2345, precision: 3}, 1.235},
+		{"3", args{num: 1.2345, precision: 0}, 1},
+		{"4", args{num: 1.9999, precision: 3}, 2},
+		{"5", args{num: -1.2345, precision: 2}, -1.23},
+		{"6", args{num: 0.5555, precision: 2}, 0.56},
+		{"7", args{num: 0.5544, precision: 2}, 0.55},
+		{"8", args{num: 123456.789, precision: 1}, 123456.8},
+		{"9", args{num: -0.0004, precision: 3}, 0},
+		{"10", args{num: 1.1111, precision: 4}, 1.1111},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := RoundFloat(tt.args.val, tt.args.precision); got != tt.want {
+			if got := RoundFloat(tt.args.num, tt.args.precision); got != tt.want {
 				t.Errorf("RoundFloat() = %v, want %v", got, tt.want)
 			}
 		})
@@ -133,8 +133,8 @@ func TestFloatToString(t *testing.T) {
 
 func TestMinOrDefault(t *testing.T) {
 	type args struct {
-		number int
-		limit  int
+		num   int
+		limit int
 	}
 	tests := []struct {
 		name string
@@ -154,7 +154,7 @@ func TestMinOrDefault(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MinOrDefault(tt.args.number, tt.args.limit); got != tt.want {
+			if got := MinOrDefault(tt.args.num, tt.args.limit); got != tt.want {
 				t.Errorf("MinOrDefault() = %v, want %v", got, tt.want)
 			}
 		})

@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.5
+// v1.1.6
 
 package helpers
 
@@ -26,7 +26,7 @@ func IsSQLDate(d string) bool {
 		return false
 	}
 
-	// Попытка разобрать дату с использованием time.Parse
+	// Попытка разобрать строку
 	_, err := time.Parse("2006-01-02", d)
 	return err == nil
 }
@@ -37,7 +37,7 @@ func IsSQLDateTime(d string) bool {
 		return false
 	}
 
-	// Попытка разобрать дату-время с использованием time.Parse
+	// Попытка разобрать строку
 	_, err := time.Parse("2006-01-02 15:04:05", d)
 	return err == nil
 }
@@ -48,7 +48,7 @@ func IsSQLTime(d string) bool {
 		return false
 	}
 
-	// Попытка разобрать время с использованием time.Parse
+	// Попытка разобрать строку
 	_, err := time.Parse("15:04:05", d)
 	return err == nil
 }
@@ -59,8 +59,8 @@ func IsHexColor(color string) bool {
 }
 
 // IsURL проверяет, является ли переданная строка валидной URL-ссылкой.
-func IsURL(str string) bool {
-	u, err := url.Parse(str)
+func IsURL(s string) bool {
+	u, err := url.Parse(s)
 	return err == nil && len(u.Scheme) > 0 && len(u.Host) > 0
 }
 
