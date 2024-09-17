@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.2
+// v1.1.3
 
 package helpers
 
@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"math"
 	"os"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ByteCountSI преобразует размер файла в байтах в строку
@@ -80,4 +82,18 @@ func ActiveEnum(flag string) string {
 		return "1"
 	}
 	return "0"
+}
+
+// HashPassword хэширует пароль.
+func HashPassword(pwd string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(hash), nil
+}
+
+// ComparePasswords сравнивает хэшированный пароль с plain текстом.
+func ComparePasswords(hashedPwd, plainPwd string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPwd), []byte(plainPwd)) == nil
 }

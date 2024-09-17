@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.2
+// v1.1.3
 
 package helpers
 
@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-// IsFloatEqual проверяет, что два числа float64 равны с учетом относительной точности
+// IsFloatEqual проверяет, что два числа float64 равны с учетом относительной точности.
 func IsFloatEqual(num1, num2 float64) bool {
 	const epsilon = 1e-9
 
@@ -59,4 +59,12 @@ func StringToFloat(s string) float64 {
 // FloatToString преобразует float64 в строку с 8 знаками после запятой.
 func FloatToString(f float64) string {
 	return fmt.Sprintf("%.8f", f)
+}
+
+// MinOrDefault возвращает минимальное из двух чисел, или limit, если number меньше или равен нулю.
+func MinOrDefault(number int, limit int) int {
+	if number <= 0 {
+		return limit
+	}
+	return min(number, limit)
 }

@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.2
+// v1.1.3
 
 package helpers
 
@@ -232,6 +232,50 @@ func TestActiveEnum(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ActiveEnum(tt.args.flag); got != tt.want {
 				t.Errorf("ActiveEnum() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestHashPassword(t *testing.T) {
+	tests := []struct {
+		name    string
+		pwd     string
+		wantErr bool
+	}{
+		{"1", "password123", false},
+		{"2", "anotherPassword", false},
+		{"3", "12345", false},
+		{"4", "", false},
+		{"5", "aVeryLongPasswordWithDifferentCharacters123!@#", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := HashPassword(tt.pwd)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("HashPassword() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestComparePasswords(t *testing.T) {
+	tests := []struct {
+		name       string
+		hashedPwd  string
+		plainPwd   string
+		wantResult bool
+	}{
+		{"1", "$2a$10$Eiknevkvo3H35yKPLC6z9eczlYQPSD5jE3kAALdkt6hi0DctTOp7O", "password123", true},
+		{"2", "$2a$10$R7hVz7vGahLXxYOLuDKDCewBXl5kpDOjSPZgH6J/gPA6MzvSb/Pey", "wrongPassword", false},
+		{"3", "$2a$10$AZIFEgFHsJILtwrmzb2tYufNCvTdKQLKMI0zmgdimh7w8njUExrXi", "12345", true},
+		{"4", "$2a$10$Wn4dNE3jcYPVmnHg.kPs7uBtUJAVOfICkId81k7j/q4A0GZKrfVpS", "54321", false},
+		{"5", "$2a$10$KzQHqmxnBeOvCwofE/dsyO9X/H1lANkGfdMN5XbfH7DZ4E4zp8n2u", "", false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ComparePasswords(tt.hashedPwd, tt.plainPwd); got != tt.wantResult {
+				t.Errorf("ComparePasswords() = %v, want %v", got, tt.wantResult)
 			}
 		})
 	}

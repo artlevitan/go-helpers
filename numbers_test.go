@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.2
+// v1.1.3
 
 package helpers
 
@@ -126,6 +126,36 @@ func TestFloatToString(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := FloatToString(tt.args.f); got != tt.want {
 				t.Errorf("FloatToString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestMinOrDefault(t *testing.T) {
+	type args struct {
+		number int
+		limit  int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"1", args{5, 10}, 5},
+		{"2", args{10, 5}, 5},
+		{"3", args{0, 10}, 10},
+		{"4", args{-5, 10}, 10},
+		{"5", args{-10, 5}, 5},
+		{"6", args{10, 10}, 10},
+		{"7", args{0, 0}, 0},
+		{"8", args{-1, 100}, 100},
+		{"9", args{1, 100}, 1},
+		{"10", args{1000, 999}, 999},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := MinOrDefault(tt.args.number, tt.args.limit); got != tt.want {
+				t.Errorf("MinOrDefault() = %v, want %v", got, tt.want)
 			}
 		})
 	}
