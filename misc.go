@@ -61,12 +61,12 @@ func Unique[T comparable](inputSlice []T) []T {
 	return unique
 }
 
-// EncodeBase64 шифрует строку в Base64 формат.
+// EncodeBase64 кодирует строку в Base64.
 func EncodeBase64(text string) string {
 	return base64.StdEncoding.EncodeToString([]byte(text))
 }
 
-// DecodeBase64 расшифровывает строку из Base64 формата.
+// DecodeBase64 декодирует строку из Base64.
 // В случае ошибки возвращает пустую строку.
 func DecodeBase64(text string) string {
 	decoded, err := base64.StdEncoding.DecodeString(text)
