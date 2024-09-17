@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestMD5Hash(t *testing.T) {
+func TestMD5(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -31,14 +31,14 @@ func TestMD5Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MD5Hash(tt.args.text); got != tt.want {
-				t.Errorf("MD5Hash() = %v, want %v", got, tt.want)
+			if got := MD5(tt.args.text); got != tt.want {
+				t.Errorf("MD5() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestSHA1Hash(t *testing.T) {
+func TestSHA1(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -60,14 +60,14 @@ func TestSHA1Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA1Hash(tt.args.text); got != tt.want {
-				t.Errorf("SHA1Hash() = %v, want %v", got, tt.want)
+			if got := SHA1(tt.args.text); got != tt.want {
+				t.Errorf("SHA1() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestSHA256Hash(t *testing.T) {
+func TestSHA256(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -89,14 +89,14 @@ func TestSHA256Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA256Hash(tt.args.text); got != tt.want {
-				t.Errorf("SHA256Hash() = %v, want %v", got, tt.want)
+			if got := SHA256(tt.args.text); got != tt.want {
+				t.Errorf("SHA256() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestSHA512Hash(t *testing.T) {
+func TestSHA512(t *testing.T) {
 	type args struct {
 		text string
 	}
@@ -118,8 +118,8 @@ func TestSHA512Hash(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA512Hash(tt.args.text); got != tt.want {
-				t.Errorf("SHA512Hash() = %v, want %v", got, tt.want)
+			if got := SHA512(tt.args.text); got != tt.want {
+				t.Errorf("SHA512() = %v, want %v", got, tt.want)
 			}
 		})
 	}

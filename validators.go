@@ -1,11 +1,12 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
 import (
+	"encoding/json"
 	"net"
 	"net/url"
 	"regexp"
@@ -73,4 +74,14 @@ func IsIPv4(ip string) bool {
 func IsIPv6(ip string) bool {
 	parsedIP := net.ParseIP(ip)
 	return parsedIP != nil && parsedIP.To16() != nil && parsedIP.To4() == nil
+}
+
+// IsValidJSON проверяет, является ли строка валидным JSON.
+func IsValidJSON(s string) (bool, error) {
+	var js interface{}
+	err := json.Unmarshal([]byte(s), &js)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

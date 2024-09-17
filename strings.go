@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -14,9 +14,11 @@ import (
 )
 
 var (
-	clearStringPattern   = regexp.MustCompile(`\s+`)
-	filterLettersPattern = regexp.MustCompile(`[^a-zA-Zа-яА-Я]+`)
-	filterDigitsPattern  = regexp.MustCompile(`\D+`)
+	clearStringPattern         = regexp.MustCompile(`\s+`)
+	filterLettersPattern       = regexp.MustCompile(`[^a-zA-Zа-яА-Я]+`)
+	filterDigitsPattern        = regexp.MustCompile(`\D+`)
+	clearHtmlPageStylesPattern = regexp.MustCompile(`(?i)(?:<style>((?:.*?\r?\n?)*)</style>)+|(?:<script>((?:.*?\r?\n?)*)</script>)+|\s+(class="(.*?)")|\s+(style="(.*?)")`)
+	stripTagsPattern           = regexp.MustCompile(`<[^>]+>|<!--.*?-->`)
 )
 
 // CutString обрезает строку до заданной длины.
@@ -75,7 +77,7 @@ func CreateCacheKey(in interface{}) string {
 	// Обработка знаковых целочисленных типов
 	case int, int8, int16, int32, int64,
 		uint, uint8, uint16, uint32, uint64:
-		fmt.Fprintf(&sb, "%d", v)
+		_, _ = fmt.Fprintf(&sb, "%d", v) // Игнорируем ошибку
 
 	// Обработка срезов целочисленных типов
 	case []int, []int8, []int16, []int32, []int64,
@@ -84,7 +86,7 @@ func CreateCacheKey(in interface{}) string {
 		rv := reflect.ValueOf(v)
 		for i := 0; i < rv.Len(); i++ {
 			elem := rv.Index(i).Interface()
-			fmt.Fprintf(&sb, "%d", elem)
+			_, _ = fmt.Fprintf(&sb, "%d", elem) // Игнорируем ошибку
 		}
 
 	// Обработка других типов с использованием JSON-сериализации
@@ -97,4 +99,16 @@ func CreateCacheKey(in interface{}) string {
 	}
 
 	return sb.String()
+}
+
+// SanitizeHTML очищает строку от HTML стилей, тегов и скриптов.
+func SanitizeHTML(s string) string {
+	// Удаление HTML стилей, скриптов и конструкций @import
+	s = clearHtmlPageStylesPattern.ReplaceAllString(s, "")
+
+	// Удаление HTML тегов
+	s = stripTagsPattern.ReplaceAllString(s, "")
+
+	// Очистка строки от лишних пробелов и переносов строк
+	return ClearString(s)
 }

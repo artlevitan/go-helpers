@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math"
+	"os"
 )
 
 // ByteCountSI преобразует размер файла в байтах в строку
@@ -32,6 +33,15 @@ func ItemExists[T comparable](slice []T, item T) bool {
 		}
 	}
 	return false
+}
+
+// FileExists проверяет, существует ли файл и не является ли он директорией.
+func FileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
 
 // Unique возвращает новый срез, содержащий только уникальные элементы.
@@ -62,4 +72,12 @@ func DecodeBase64(text string) string {
 		return ""
 	}
 	return string(decoded)
+}
+
+// ActiveEnum возвращает значение ENUM["0", "1"] в зависимости от входного флага.
+func ActiveEnum(flag string) string {
+	if flag == "1" {
+		return "1"
+	}
+	return "0"
 }

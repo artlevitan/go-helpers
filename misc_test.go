@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -65,6 +65,27 @@ func TestItemExists(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := ItemExists(tt.slice, tt.item); got != tt.expect {
 				t.Errorf("ItemExists() = %v, want %v", got, tt.expect)
+			}
+		})
+	}
+}
+
+func TestFileExists(t *testing.T) {
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{"1", args{"misc.go"}, true},
+		{"2", args{"404.txt"}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FileExists(tt.args.filename); got != tt.want {
+				t.Errorf("FileExists() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -182,6 +203,35 @@ func TestDecodeBase64(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := DecodeBase64(tt.args.text); got != tt.want {
 				t.Errorf("DecodeBase64() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestActiveEnum(t *testing.T) {
+	type args struct {
+		flag string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"1", args{"1"}, "1"},
+		{"2", args{"0"}, "0"},
+		{"3", args{"2"}, "0"},
+		{"4", args{""}, "0"},
+		{"5", args{"true"}, "0"},
+		{"6", args{"false"}, "0"},
+		{"7", args{"yes"}, "0"},
+		{"8", args{"no"}, "0"},
+		{"9", args{"-1"}, "0"},
+		{"10", args{"1.0"}, "0"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ActiveEnum(tt.args.flag); got != tt.want {
+				t.Errorf("ActiveEnum() = %v, want %v", got, tt.want)
 			}
 		})
 	}

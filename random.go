@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -29,25 +29,25 @@ const (
 // RandomMD5 генерирует случайный MD5-хеш.
 func RandomMD5() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return MD5Hash(timestamp)
+	return MD5(timestamp)
 }
 
 // RandomSHA1 генерирует случайный SHA1-хеш.
 func RandomSHA1() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return SHA1Hash(timestamp)
+	return SHA1(timestamp)
 }
 
 // RandomSHA256 генерирует случайный SHA256-хеш.
 func RandomSHA256() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return SHA256Hash(timestamp)
+	return SHA256(timestamp)
 }
 
 // RandomSHA512 генерирует случайный SHA512-хеш.
 func RandomSHA512() string {
 	timestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
-	return SHA512Hash(timestamp)
+	return SHA512(timestamp)
 }
 
 // RandomInt возвращает случайное целое число в диапазоне от min до max включительно.

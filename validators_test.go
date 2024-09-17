@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.0
+// v1.1.1
 
 package helpers
 
@@ -228,6 +228,41 @@ func TestIsIPv6(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := IsIPv6(tt.args.ip); got != tt.want {
 				t.Errorf("IsIPv6() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIsValidJSON(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    bool
+		wantErr bool
+	}{
+		{"1", args{`{}`}, true, false},
+		{"2", args{`{"bar":2,"baz":3,"foo":1}`}, true, false},
+		{"3", args{`{bar":2,"baz":3,"foo":1}`}, false, true},
+		{"4", args{`{"bar":2,"baz":3,"foo":1,}`}, false, true},
+		{"5", args{`"bar":2,"baz":3,"foo":1`}, false, true},
+		{"6", args{`[]`}, true, false},
+		{"7", args{`{"name":"John", "age":30, "city":"New York"}`}, true, false},
+		{"8", args{`{"numbers":[1,2,3,4,5]}`}, true, false},
+		{"9", args{`{"key":"value","list":[1,2,3],"obj":{"innerKey":"innerValue"}}`}, true, false},
+		{"10", args{`{"unclosed_object":{"key":"value"`}, false, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := IsValidJSON(tt.args.s)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("IsValidJSON() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("IsValidJSON() = %v, want %v", got, tt.want)
 			}
 		})
 	}
