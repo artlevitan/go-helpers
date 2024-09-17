@@ -1,13 +1,48 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.1
+// v1.1.2
 
 package helpers
 
 import (
+	"math"
 	"testing"
 )
+
+func TestIsFloatEqual(t *testing.T) {
+	type args struct {
+		num1 float64
+		num2 float64
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{"1", args{1.000000001, 1.000000002}, true},
+		{"2", args{-1.000000001, -1.000000002}, true},
+		{"3", args{1.0, 1.00000001}, false},
+		{"4", args{-1.0, -1.00000001}, false},
+		{"5", args{0.0, 1e-12}, true},
+		{"6", args{1e-10, 1e-10}, true},
+		{"7", args{1e-8, 1e-9}, false},
+		{"8", args{1e9, 1e9}, true},
+		{"9", args{1e9, 1e9 + 1e6}, false},
+		{"10", args{math.Inf(1), math.Inf(1)}, true},
+		{"11", args{math.Inf(-1), math.Inf(-1)}, true},
+		{"12", args{math.Inf(1), math.Inf(-1)}, false},
+		{"13", args{math.NaN(), 1.0}, false},
+		{"14", args{math.NaN(), math.NaN()}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsFloatEqual(tt.args.num1, tt.args.num2); got != tt.want {
+				t.Errorf("IsFloatEqual() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
 func TestRoundFloat(t *testing.T) {
 	type args struct {

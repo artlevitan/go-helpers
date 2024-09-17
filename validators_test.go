@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.1
+// v1.1.2
 
 package helpers
 
@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestIsValidSQLDate(t *testing.T) {
+func TestIsSQLDate(t *testing.T) {
 	// Валидные даты
 	validDates := []string{
 		"2023-01-01",
@@ -30,19 +30,19 @@ func TestIsValidSQLDate(t *testing.T) {
 	}
 
 	for _, date := range validDates {
-		if !IsValidSQLDate(date) {
+		if !IsSQLDate(date) {
 			t.Errorf("Ожидалось, что дата %s будет валидной", date)
 		}
 	}
 
 	for _, date := range invalidDates {
-		if IsValidSQLDate(date) {
+		if IsSQLDate(date) {
 			t.Errorf("Ожидалось, что дата %s будет невалидной", date)
 		}
 	}
 }
 
-func TestIsValidSQLDateTime(t *testing.T) {
+func TestIsSQLDateTime(t *testing.T) {
 	// Валидные даты-время
 	validDateTimes := []string{
 		"2023-01-01 12:30:45",
@@ -63,19 +63,19 @@ func TestIsValidSQLDateTime(t *testing.T) {
 	}
 
 	for _, dateTime := range validDateTimes {
-		if !IsValidSQLDateTime(dateTime) {
+		if !IsSQLDateTime(dateTime) {
 			t.Errorf("Ожидалось, что дата-время %s будет валидной", dateTime)
 		}
 	}
 
 	for _, dateTime := range invalidDateTimes {
-		if IsValidSQLDateTime(dateTime) {
+		if IsSQLDateTime(dateTime) {
 			t.Errorf("Ожидалось, что дата-время %s будет невалидной", dateTime)
 		}
 	}
 }
 
-func TestIsValidSQLTime(t *testing.T) {
+func TestIsSQLTime(t *testing.T) {
 	// Валидное время
 	validTimes := []string{
 		"00:00:00",
@@ -95,19 +95,19 @@ func TestIsValidSQLTime(t *testing.T) {
 	}
 
 	for _, timeStr := range validTimes {
-		if !IsValidSQLTime(timeStr) {
+		if !IsSQLTime(timeStr) {
 			t.Errorf("Ожидалось, что время %s будет валидным", timeStr)
 		}
 	}
 
 	for _, timeStr := range invalidTimes {
-		if IsValidSQLTime(timeStr) {
+		if IsSQLTime(timeStr) {
 			t.Errorf("Ожидалось, что время %s будет невалидным", timeStr)
 		}
 	}
 }
 
-func TestIsValidHexColor(t *testing.T) {
+func TestIsHexColor(t *testing.T) {
 	type args struct {
 		color string
 	}
@@ -134,8 +134,8 @@ func TestIsValidHexColor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsValidHexColor(tt.args.color); got != tt.want {
-				t.Errorf("IsValidHexColor() = %v, want %v", got, tt.want)
+			if got := IsHexColor(tt.args.color); got != tt.want {
+				t.Errorf("IsHexColor() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -233,7 +233,7 @@ func TestIsIPv6(t *testing.T) {
 	}
 }
 
-func TestIsValidJSON(t *testing.T) {
+func TestIsJSON(t *testing.T) {
 	type args struct {
 		s string
 	}
@@ -256,13 +256,13 @@ func TestIsValidJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := IsValidJSON(tt.args.s)
+			got, err := IsJSON(tt.args.s)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("IsValidJSON() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("IsJSON() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("IsValidJSON() = %v, want %v", got, tt.want)
+				t.Errorf("IsJSON() = %v, want %v", got, tt.want)
 			}
 		})
 	}
