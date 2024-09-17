@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.6
+// v1.1.7
 
 package helpers
 
@@ -76,6 +76,64 @@ func TestSHA256(t *testing.T) {
 		args args
 		want string
 	}{
+		{"1", args{""}, "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},
+		{"2", args{"hello"}, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"},
+		{"3", args{"12345"}, "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5"},
+		{"4", args{"The quick brown fox jumps over the lazy dog"}, "d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592"},
+		{"5", args{"!@#$%^&*()"}, "95ce789c5c9d18490972709838ca3a9719094bca3ac16332cfec0652b0236141"},
+		{"6", args{"Привет мир"}, "830d1964dc8673182a40f9adebf598960d37fbe200405b249774ecfa5b465748"},
+		{"7", args{"hello\nworld"}, "26c60a61d01db5836ca70fefd44a6a016620413c8ef5f259a6c5612d4f79d3b8"},
+		{"8", args{"aaaaa"}, "ed968e840d10d2d313a870bc131a4e2c311d7ad09bdf32b3418147221f51a6e2"},
+		{"9", args{"😀😃😄😁😆"}, "cf61553b282c801b8a7ac6db772f3d05c4d8e98faf84f350b3b7734ebaab7989"},
+		{"10", args{"12345678901234567890"}, "6ed645ef0e1abea1bf1e4e935ff04f9e18d39812387f63cda3415b46240f0405"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SHA256(tt.args.s); got != tt.want {
+				t.Errorf("SHA256() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSHA512(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"1", args{""}, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"},
+		{"2", args{"hello"}, "9b71d224bd62f3785d96d46ad3ea3d73319bfbc2890caadae2dff72519673ca72323c3d99ba5c11d7c7acc6e14b8c5da0c4663475c2e5c3adef46f73bcdec043"},
+		{"3", args{"12345"}, "3627909a29c31381a071ec27f7c9ca97726182aed29a7ddd2e54353322cfb30abb9e3a6df2ac2c20fe23436311d678564d0c8d305930575f60e2d3d048184d79"},
+		{"4", args{"The quick brown fox jumps over the lazy dog"}, "07e547d9586f6a73f73fbac0435ed76951218fb7d0c8d788a309d785436bbb642e93a252a954f23912547d1e8a3b5ed6e1bfd7097821233fa0538f3db854fee6"},
+		{"5", args{"!@#$%^&*()"}, "138fad927473f694c3a02cca61008e52572bd19ce442f20e139b6f09157b97157fd71946fedfec2381b7e33618afe5f7c24a873ed1efe416978acfc434503614"},
+		{"6", args{"Привет мир"}, "677b137ee0f83e18fb09a65001aee2fa150f28843c020eec1d4980d63c8a1d779fae69fcf0fc8030bdfe128ff04b091b220a709fbb63d51f77588839acd9f27b"},
+		{"7", args{"hello\nworld"}, "c95a099794a5ef71b75704a263bec3c1f6d5d5c21f8942b82e45897321c2afb5eaa564549503869d9246ee9c912f899f052a3911733a00432dd71a77e7bae7a0"},
+		{"8", args{"aaaaa"}, "f368a29b71bd201a7ef78b5df88b1361fbe83f959756d33793837a5d7b2eaf660f2f6c7e2fbace01965683c4cfafded3ff28aab34e329aa79bc81e7703f68b86"},
+		{"9", args{"😀😃😄😁😆"}, "e43d260fe7eb44b2c7a42d49cbfdc8bdedcd6a84e5d9875e347ccfc653f7190b9ae5d879909017dc742530a10a8ae9c2b44a26bf9543ef10ec27bb4ccf440548"},
+		{"10", args{"12345678901234567890"}, "aa3b7bdd98ec44af1f395bbd5f7f27a5cd9569d794d032747323bf4b1521fbe7725875a68b440abdf0559de5015baf873bb9c01cae63ecea93ad547a7397416e"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SHA512(tt.args.s); got != tt.want {
+				t.Errorf("SHA512() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSHA3_256(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
 		{"1", args{""}, "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"},
 		{"2", args{"hello"}, "3338be694f50c5f338814986cdf0686453a888b84f424d792af4b9202398f392"},
 		{"3", args{"12345"}, "7d4e3eec80026719639ed4dba68916eb94c7a49a053e05c8f9578fe4e5a3d7ea"},
@@ -89,14 +147,14 @@ func TestSHA256(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA256(tt.args.s); got != tt.want {
-				t.Errorf("SHA256() = %v, want %v", got, tt.want)
+			if got := SHA3_256(tt.args.s); got != tt.want {
+				t.Errorf("SHA3_256() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestSHA512(t *testing.T) {
+func TestSHA3_512(t *testing.T) {
 	type args struct {
 		s string
 	}
@@ -118,8 +176,8 @@ func TestSHA512(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := SHA512(tt.args.s); got != tt.want {
-				t.Errorf("SHA512() = %v, want %v", got, tt.want)
+			if got := SHA3_512(tt.args.s); got != tt.want {
+				t.Errorf("SHA3_512() = %v, want %v", got, tt.want)
 			}
 		})
 	}
