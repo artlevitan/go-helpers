@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.8
+// v1.1.9
 
 package helpers
 
@@ -81,6 +81,18 @@ func SanitizeHTML(s string) string {
 
 	// Очистка строки от лишних пробелов и переносов строк
 	return ClearString(s)
+}
+
+// SanitizeHTMLWithTextarea очищает строку от HTML стилей, тегов и скриптов сохраня переносы.
+func SanitizeHTMLWithTextarea(s string) string {
+	// Удаление HTML стилей, скриптов
+	s = clearHtmlPageStylesPattern.ReplaceAllString(s, "")
+
+	// Удаление HTML тегов
+	s = stripTagsPattern.ReplaceAllString(s, "")
+
+	// Очищает многострочный текст
+	return ClearTextarea(s)
 }
 
 // RemoveEmojis удаляет Emoji из строки.
