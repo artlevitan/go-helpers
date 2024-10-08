@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.10
+// v1.1.11
 
 package helpers
 
@@ -13,17 +13,14 @@ import (
 	"github.com/google/uuid"
 )
 
-// StringCharSet - тип для выбора набора символов
-type StringCharSet int
-
 const (
-	Digits                   StringCharSet = iota // Только цифры
-	Lowercase                                     // Только строчные буквы
-	Uppercase                                     // Только заглавные буквы
-	Letters                                       // Только буквы (заглавные и строчные)
-	LettersAndDigits                              // Буквы и цифры
-	LettersAndSpecials                            // Буквы и специальные символы
-	LettersDigitsAndSpecials                      // Буквы, цифры и специальные символы
+	Digits                   = iota // Только цифры
+	Lowercase                       // Только строчные буквы
+	Uppercase                       // Только заглавные буквы
+	Letters                         // Только буквы (заглавные и строчные)
+	LettersAndDigits                // Буквы и цифры
+	LettersAndSpecials              // Буквы и специальные символы
+	LettersDigitsAndSpecials        // Буквы, цифры и специальные символы
 )
 
 // RandomMD5 генерирует случайный MD5-хеш.
@@ -70,7 +67,7 @@ func RandomUUID() string {
 }
 
 // RandomString возвращает случайную строку заданной длины из выбранного набора символов.
-func RandomString(length int, charSetType StringCharSet) string {
+func RandomString(length int, charSetType int) string {
 	// Проверяем, что длина больше 0
 	if length <= 0 {
 		return ""

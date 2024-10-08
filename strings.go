@@ -1,13 +1,14 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.10
+// v1.1.11
 
 package helpers
 
 import (
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 var (
@@ -67,7 +68,7 @@ func FilterDigits(s string) string {
 // CheckStringLength проверяет, что длина строки находится в заданном диапазоне.
 // Возвращает true, если длина строки в диапазоне [minLength, maxLength], иначе false.
 func CheckStringLength(s string, minLength int, maxLength int) bool {
-	length := len([]rune(s))
+	length := utf8.RuneCountInString(s)
 	return length >= minLength && length <= maxLength
 }
 
