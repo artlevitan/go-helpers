@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.9
+// v1.1.10
 
 package helpers
 
@@ -14,15 +14,15 @@ import (
 )
 
 var (
-	IsSQLDatePattern     = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))$`)
-	IsSQLDateTimePattern = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))(\s)(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
-	IsSQLTimePattern     = regexp.MustCompile(`^(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
-	IsHexColorPattern    = regexp.MustCompile(`^#?([A-Fa-f\d]{3}|[A-Fa-f\d]{6})$`)
+	isSQLDatePattern     = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))$`)
+	isSQLDateTimePattern = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))(\s)(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
+	isSQLTimePattern     = regexp.MustCompile(`^(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
+	isHexColorPattern    = regexp.MustCompile(`^#?([A-Fa-f\d]{3}|[A-Fa-f\d]{6})$`)
 )
 
 // IsSQLDate проверяет, что строка имеет формат SQL DATE и является валидной датой.
 func IsSQLDate(d string) bool {
-	if !IsSQLDatePattern.MatchString(d) {
+	if !isSQLDatePattern.MatchString(d) {
 		return false
 	}
 
@@ -33,7 +33,7 @@ func IsSQLDate(d string) bool {
 
 // IsSQLDateTime проверяет, что строка имеет формат SQL DATETIME и является валидной датой и временем.
 func IsSQLDateTime(d string) bool {
-	if !IsSQLDateTimePattern.MatchString(d) {
+	if !isSQLDateTimePattern.MatchString(d) {
 		return false
 	}
 
@@ -44,7 +44,7 @@ func IsSQLDateTime(d string) bool {
 
 // IsSQLTime проверяет, что строка имеет формат SQL TIME и является валидным временем.
 func IsSQLTime(d string) bool {
-	if !IsSQLTimePattern.MatchString(d) {
+	if !isSQLTimePattern.MatchString(d) {
 		return false
 	}
 
@@ -55,7 +55,7 @@ func IsSQLTime(d string) bool {
 
 // IsHexColor проверяет, является ли строка валидным HEX-кодом цвета.
 func IsHexColor(color string) bool {
-	return IsHexColorPattern.MatchString(color)
+	return isHexColorPattern.MatchString(color)
 }
 
 // IsURL проверяет, является ли переданная строка валидной URL-ссылкой.
