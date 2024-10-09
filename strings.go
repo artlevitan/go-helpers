@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.11
+// v1.1.12
 
 package helpers
 
@@ -65,10 +65,15 @@ func FilterDigits(s string) string {
 	return filterDigitsPattern.ReplaceAllString(s, "")
 }
 
-// CheckStringLength проверяет, что длина строки находится в заданном диапазоне.
+// StringLength возвращает количество символов в строке.
+func StringLength(s string) int {
+	return utf8.RuneCountInString(s)
+}
+
+// IsStringLengthInRange проверяет, что длина строки находится в заданном диапазоне.
 // Возвращает true, если длина строки в диапазоне [minLength, maxLength], иначе false.
-func CheckStringLength(s string, minLength int, maxLength int) bool {
-	length := utf8.RuneCountInString(s)
+func IsStringLengthInRange(s string, minLength int, maxLength int) bool {
+	length := StringLength(s)
 	return length >= minLength && length <= maxLength
 }
 

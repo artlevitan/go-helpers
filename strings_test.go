@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.11
+// v1.1.12
 
 package helpers
 
@@ -155,7 +155,36 @@ func TestFilterDigits(t *testing.T) {
 	}
 }
 
-func TestCheckStringLength(t *testing.T) {
+func TestStringLength(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"1", args{""}, 0},
+		{"2", args{"hello"}, 5},
+		{"3", args{"привет"}, 6},
+		{"4", args{"😀"}, 1},
+		{"5", args{"abc😀"}, 4},
+		{"6", args{"abcdefghijklmnopqrstuvwxyz"}, 26},
+		{"7", args{"こんにちは"}, 5},
+		{"8", args{"你好"}, 2},
+		{"9", args{"@#$%^&*()"}, 9},
+		{"10", args{"𐍈😀привет"}, 8},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := StringLength(tt.args.s); got != tt.want {
+				t.Errorf("StringLength() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestIsStringLengthInRange(t *testing.T) {
 	type args struct {
 		str       string
 		minLength int
@@ -179,8 +208,8 @@ func TestCheckStringLength(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CheckStringLength(tt.args.str, tt.args.minLength, tt.args.maxLength); got != tt.want {
-				t.Errorf("CheckStringLength() = %v, want %v", got, tt.want)
+			if got := IsStringLengthInRange(tt.args.str, tt.args.minLength, tt.args.maxLength); got != tt.want {
+				t.Errorf("IsStringLengthInRange() = %v, want %v", got, tt.want)
 			}
 		})
 	}
