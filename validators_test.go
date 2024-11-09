@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.13
+// v1.1.14
 
 package helpers
 
@@ -228,6 +228,48 @@ func TestIsIPv6(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := IsIPv6(tt.args.ip); got != tt.want {
 				t.Errorf("IsIPv6() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_isPrivateOrReservedIP(t *testing.T) {
+	type args struct {
+		ip string
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{"1", args{"192.168.1.1"}, true},
+		{"2", args{"10.0.0.1"}, true},
+		{"3", args{"172.16.0.1"}, true},
+		{"4", args{"8.8.8.8"}, false},
+		{"5", args{"127.0.0.1"}, true},
+		{"6", args{"0.0.0.0"}, true},
+		{"7", args{"255.255.255.255"}, false},
+		{"8", args{"::1"}, true},
+		{"9", args{"2001:db8::"}, true},
+		{"10", args{"fe80::1"}, true},
+		{"11", args{"fc00::1"}, true},
+		{"12", args{"fd00::1"}, true},
+		{"13", args{"::"}, true},
+		{"14", args{"ff02::1"}, true},
+		{"15", args{"2001:4860:4860::8888"}, false},
+		{"16", args{"2606:4700:4700::1111"}, false},
+		{"17", args{"2001:db8:1::1"}, true},
+		{"18", args{"2a00:1450:4001:81b::200e"}, false},
+		{"19", args{"3ffe::1"}, false},
+		{"20", args{"ff05::1"}, true},
+		{"21", args{"192.0.2.1"}, true},
+		{"22", args{"198.51.100.1"}, true},
+		{"23", args{"203.0.113.1"}, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := isPrivateOrReservedIP(tt.args.ip); got != tt.want {
+				t.Errorf("isPrivateOrReservedIP() = %v, want %v", got, tt.want)
 			}
 		})
 	}

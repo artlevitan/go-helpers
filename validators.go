@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.13
+// v1.1.14
 
 package helpers
 
@@ -82,7 +82,37 @@ func isPrivateOrReservedIP(ip string) bool {
 	if parsedIP == nil {
 		return false
 	}
-	return parsedIP.IsPrivate() || parsedIP.IsLoopback() || parsedIP.IsUnspecified() || parsedIP.IsMulticast()
+
+	// Проверка частных, loopback, unspecified, multicast и link-local адресов
+	if parsedIP.IsPrivate() || parsedIP.IsLoopback() || parsedIP.IsUnspecified() ||
+		parsedIP.IsMulticast() || parsedIP.IsLinkLocalUnicast() {
+		return true
+	}
+
+	// Проверка IPv6 диапазона документации (2001:db8::/32)
+	if parsedIP.To16() != nil {
+		_, db8Net, _ := net.ParseCIDR("2001:db8::/32")
+		if db8Net.Contains(parsedIP) {
+			return true
+		}
+	}
+
+	// Проверка IPv4 диапазонов документации
+	if parsedIP.To4() != nil {
+		docNets := []string{
+			"192.0.2.0/24",
+			"198.51.100.0/24",
+			"203.0.113.0/24",
+		}
+		for _, cidr := range docNets {
+			_, net, _ := net.ParseCIDR(cidr)
+			if net.Contains(parsedIP) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 // IsJSON проверяет, является ли строка валидным JSON.
