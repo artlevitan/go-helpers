@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.14
+// v1.1.15
 
 package helpers
 
@@ -76,8 +76,8 @@ func IsIPv6(ip string) bool {
 	return parsedIP != nil && parsedIP.To16() != nil && parsedIP.To4() == nil
 }
 
-// isPrivateOrReservedIP проверяет, является ли указанный IP-адрес частным или зарезервированным.
-func isPrivateOrReservedIP(ip string) bool {
+// IsPrivateOrReservedIP проверяет, является ли указанный IP-адрес частным или зарезервированным.
+func IsPrivateOrReservedIP(ip string) bool {
 	parsedIP := net.ParseIP(ip)
 	if parsedIP == nil {
 		return false

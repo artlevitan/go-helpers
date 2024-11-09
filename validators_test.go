@@ -1,7 +1,7 @@
 // Copyright 2023-2024, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.14
+// v1.1.15
 
 package helpers
 
@@ -265,11 +265,13 @@ func Test_isPrivateOrReservedIP(t *testing.T) {
 		{"21", args{"192.0.2.1"}, true},
 		{"22", args{"198.51.100.1"}, true},
 		{"23", args{"203.0.113.1"}, true},
+		{"24", args{"1234567890"}, false},
+		{"25", args{""}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := isPrivateOrReservedIP(tt.args.ip); got != tt.want {
-				t.Errorf("isPrivateOrReservedIP() = %v, want %v", got, tt.want)
+			if got := IsPrivateOrReservedIP(tt.args.ip); got != tt.want {
+				t.Errorf("IsPrivateOrReservedIP() = %v, want %v", got, tt.want)
 			}
 		})
 	}
