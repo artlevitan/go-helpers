@@ -1,7 +1,7 @@
-// Copyright 2023-2024, Appercase LLC. All rights reserved.
+// Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.15
+// v1.1.16
 
 package helpers
 
@@ -12,7 +12,7 @@ import (
 // HasDelayPassed проверяет, прошло ли заданное время задержки от указанного начального времени.
 // Возвращает true, если текущее время позже, чем startTime + delay.
 func HasDelayPassed(startTime time.Time, delayDuration time.Duration) bool {
-	return time.Now().After(startTime.Add(delayDuration))
+	return time.Since(startTime) > delayDuration
 }
 
 // IsTimeInRange проверяет, находится ли заданное время в диапазоне от startTime до endTime.

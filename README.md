@@ -1,3 +1,7 @@
+# go-helpers ![Coverage](https://img.shields.io/badge/Coverage-99.5%25-brightgreen)
+
+Вспомогательные функции для Go.
+
 ## Подключение
     package main
 
@@ -26,5 +30,5 @@
     }
 
 ## Лицензия
-Copyright 2023-2024, Appercase LLC. All rights reserved.
+Copyright 2023-2025, Appercase LLC. All rights reserved.
 https://www.appercase.ru/

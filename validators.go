@@ -1,13 +1,13 @@
-// Copyright 2023-2024, Appercase LLC. All rights reserved.
+// Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.15
+// v1.1.16
 
 package helpers
 
 import (
 	"encoding/json"
-	"net"
+	"net/netip"
 	"net/url"
 	"regexp"
 	"time"
@@ -66,47 +66,51 @@ func IsURL(s string) bool {
 
 // IsIPv4 проверяет, является ли предоставленная строка действительным IPv4-адресом.
 func IsIPv4(ip string) bool {
-	parsedIP := net.ParseIP(ip)
-	return parsedIP != nil && parsedIP.To4() != nil
+	addr, err := netip.ParseAddr(ip)
+	if err != nil {
+		return false
+	}
+	return addr.Is4()
 }
 
 // IsIPv6 проверяет, является ли предоставленная строка действительным IPv6-адресом.
 func IsIPv6(ip string) bool {
-	parsedIP := net.ParseIP(ip)
-	return parsedIP != nil && parsedIP.To16() != nil && parsedIP.To4() == nil
+	addr, err := netip.ParseAddr(ip)
+	if err != nil {
+		return false
+	}
+	return addr.Is6()
 }
 
 // IsPrivateOrReservedIP проверяет, является ли указанный IP-адрес частным или зарезервированным.
 func IsPrivateOrReservedIP(ip string) bool {
-	parsedIP := net.ParseIP(ip)
-	if parsedIP == nil {
+	addr, err := netip.ParseAddr(ip)
+	if err != nil {
 		return false
 	}
 
-	// Проверка частных, loopback, unspecified, multicast и link-local адресов
-	if parsedIP.IsPrivate() || parsedIP.IsLoopback() || parsedIP.IsUnspecified() ||
-		parsedIP.IsMulticast() || parsedIP.IsLinkLocalUnicast() {
+	// Проверка с использованием встроенных методов netip.Addr
+	if addr.IsPrivate() || addr.IsLoopback() || addr.IsUnspecified() ||
+		addr.IsMulticast() || addr.IsLinkLocalUnicast() {
 		return true
 	}
 
-	// Проверка IPv6 диапазона документации (2001:db8::/32)
-	if parsedIP.To16() != nil {
-		_, db8Net, _ := net.ParseCIDR("2001:db8::/32")
-		if db8Net.Contains(parsedIP) {
+	// Для IPv6: проверка диапазона документации 2001:db8::/32
+	if addr.Is6() {
+		if docPrefix, err := netip.ParsePrefix("2001:db8::/32"); err == nil && docPrefix.Contains(addr) {
 			return true
 		}
 	}
 
-	// Проверка IPv4 диапазонов документации
-	if parsedIP.To4() != nil {
-		docNets := []string{
+	// Для IPv4: проверка диапазонов документации
+	if addr.Is4() {
+		prefixes := []string{
 			"192.0.2.0/24",
 			"198.51.100.0/24",
 			"203.0.113.0/24",
 		}
-		for _, cidr := range docNets {
-			_, net, _ := net.ParseCIDR(cidr)
-			if net.Contains(parsedIP) {
+		for _, prefixStr := range prefixes {
+			if prefix, err := netip.ParsePrefix(prefixStr); err == nil && prefix.Contains(addr) {
 				return true
 			}
 		}
