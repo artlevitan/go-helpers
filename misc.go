@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.16
+// v1.1.17
 
 package helpers
 
@@ -17,16 +17,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+const (
+	siUnit  = 1000
+	siUnits = "kMGTPEZY"
+)
+
+var logUnit = math.Log(siUnit)
+
 // ByteCountSI преобразует размер файла в байтах в строку
 // с использованием SI-единиц (например, kB, MB, GB).
 func ByteCountSI(byteSize int64) string {
-	const unit = 1000
-	if byteSize < unit {
+	if byteSize < siUnit {
 		return fmt.Sprintf("%d B", byteSize)
 	}
-	exp := int(math.Log(float64(byteSize)) / math.Log(unit))
-	pre := "kMGTPEZY"[exp-1]
-	val := float64(byteSize) / math.Pow(unit, float64(exp))
+	exp := int(math.Log(float64(byteSize)) / logUnit)
+	pre := siUnits[exp-1]
+	val := float64(byteSize) / math.Pow(siUnit, float64(exp))
 	return fmt.Sprintf("%.2f %cB", val, pre)
 }
 
@@ -43,7 +49,7 @@ func ItemExists[T comparable](slice []T, item T) bool {
 // FileExists проверяет, существует ли файл и не является ли он директорией.
 func FileExists(filename string) bool {
 	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
+	if err != nil {
 		return false
 	}
 	return !info.IsDir()
@@ -51,16 +57,14 @@ func FileExists(filename string) bool {
 
 // Unique возвращает новый срез, содержащий только уникальные элементы.
 func Unique[T comparable](inputSlice []T) []T {
-	seen := make(map[T]bool)
-	unique := []T{}
-
+	seen := make(map[T]struct{}, len(inputSlice))
+	unique := make([]T, 0, len(inputSlice))
 	for _, item := range inputSlice {
-		if !seen[item] {
-			seen[item] = true
+		if _, exists := seen[item]; !exists {
+			seen[item] = struct{}{}
 			unique = append(unique, item)
 		}
 	}
-
 	return unique
 }
 
@@ -118,19 +122,18 @@ func CreateCacheKey(input interface{}) string {
 	case []byte:
 		sb.WriteString(string(v))
 
-	// Обработка знаковых целочисленных типов
+	// Обработка целочисленных типов
 	case int, int8, int16, int32, int64,
 		uint, uint8, uint16, uint32, uint64:
-		_, _ = fmt.Fprintf(&sb, "%d", v) // Игнорируем ошибку
+		_, _ = fmt.Fprintf(&sb, "%d", v)
 
 	// Обработка срезов целочисленных типов
 	case []int, []int8, []int16, []int32, []int64,
 		[]uint, []uint16, []uint32, []uint64:
-		// Используем рефлексию для обработки срезов различных типов
 		rv := reflect.ValueOf(v)
 		for i := 0; i < rv.Len(); i++ {
 			elem := rv.Index(i).Interface()
-			_, _ = fmt.Fprintf(&sb, "%d", elem) // Игнорируем ошибку
+			_, _ = fmt.Fprintf(&sb, "%d", elem)
 		}
 
 	// Обработка других типов с использованием JSON

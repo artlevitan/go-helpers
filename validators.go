@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.16
+// v1.1.17
 
 package helpers
 
@@ -13,11 +13,27 @@ import (
 	"time"
 )
 
+const (
+	sqlDateLayout     = "2006-01-02"
+	sqlDateTimeLayout = "2006-01-02 15:04:05"
+	sqlTimeLayout     = "15:04:05"
+)
+
 var (
-	isSQLDatePattern     = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))$`)
-	isSQLDateTimePattern = regexp.MustCompile(`^\d{4}-((0[1-9])|(1[0-2]))-((0[1-9])|([1-2][0-9])|(3[0-1]))(\s)(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
-	isSQLTimePattern     = regexp.MustCompile(`^(([0-1][0-9])|(2[0-3])):([0-5][0-9]):([0-5][0-9])$`)
+	isSQLDatePattern     = regexp.MustCompile(`^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$`)
+	isSQLDateTimePattern = regexp.MustCompile(`^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])\s((0\d)|(1\d)|(2[0-3])):([0-5]\d):([0-5]\d)$`)
+	isSQLTimePattern     = regexp.MustCompile(`^((0\d)|(1\d)|(2[0-3])):([0-5]\d):([0-5]\d)$`)
 	isHexColorPattern    = regexp.MustCompile(`^#?([A-Fa-f\d]{3}|[A-Fa-f\d]{6})$`)
+
+	// Глобальные переменные для диапазонов зарезервированных IP-адресов.
+	// Диапазон для IPv6: документация (2001:db8::/32).
+	docIPv6Prefix = netip.MustParsePrefix("2001:db8::/32")
+	// Диапазоны для IPv4: документация.
+	reservedIPv4Prefixes = []netip.Prefix{
+		netip.MustParsePrefix("192.0.2.0/24"),
+		netip.MustParsePrefix("198.51.100.0/24"),
+		netip.MustParsePrefix("203.0.113.0/24"),
+	}
 )
 
 // IsSQLDate проверяет, что строка имеет формат SQL DATE и является валидной датой.
@@ -25,9 +41,8 @@ func IsSQLDate(d string) bool {
 	if !isSQLDatePattern.MatchString(d) {
 		return false
 	}
-
-	// Попытка разобрать строку
-	_, err := time.Parse("2006-01-02", d)
+	// Разбор строки с использованием константного формата.
+	_, err := time.Parse(sqlDateLayout, d)
 	return err == nil
 }
 
@@ -36,9 +51,7 @@ func IsSQLDateTime(d string) bool {
 	if !isSQLDateTimePattern.MatchString(d) {
 		return false
 	}
-
-	// Попытка разобрать строку
-	_, err := time.Parse("2006-01-02 15:04:05", d)
+	_, err := time.Parse(sqlDateTimeLayout, d)
 	return err == nil
 }
 
@@ -47,9 +60,7 @@ func IsSQLTime(d string) bool {
 	if !isSQLTimePattern.MatchString(d) {
 		return false
 	}
-
-	// Попытка разобрать строку
-	_, err := time.Parse("15:04:05", d)
+	_, err := time.Parse(sqlTimeLayout, d)
 	return err == nil
 }
 
@@ -61,7 +72,7 @@ func IsHexColor(color string) bool {
 // IsURL проверяет, является ли переданная строка валидной URL-ссылкой.
 func IsURL(s string) bool {
 	u, err := url.Parse(s)
-	return err == nil && len(u.Scheme) > 0 && len(u.Host) > 0
+	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
 // IsIPv4 проверяет, является ли предоставленная строка действительным IPv4-адресом.
@@ -89,28 +100,21 @@ func IsPrivateOrReservedIP(ip string) bool {
 		return false
 	}
 
-	// Проверка с использованием встроенных методов netip.Addr
+	// Используем встроенные методы netip.Addr для базовой проверки.
 	if addr.IsPrivate() || addr.IsLoopback() || addr.IsUnspecified() ||
 		addr.IsMulticast() || addr.IsLinkLocalUnicast() {
 		return true
 	}
 
-	// Для IPv6: проверка диапазона документации 2001:db8::/32
-	if addr.Is6() {
-		if docPrefix, err := netip.ParsePrefix("2001:db8::/32"); err == nil && docPrefix.Contains(addr) {
-			return true
-		}
+	// Для IPv6: проверка диапазона документации 2001:db8::/32.
+	if addr.Is6() && docIPv6Prefix.Contains(addr) {
+		return true
 	}
 
-	// Для IPv4: проверка диапазонов документации
+	// Для IPv4: проверка диапазонов документации.
 	if addr.Is4() {
-		prefixes := []string{
-			"192.0.2.0/24",
-			"198.51.100.0/24",
-			"203.0.113.0/24",
-		}
-		for _, prefixStr := range prefixes {
-			if prefix, err := netip.ParsePrefix(prefixStr); err == nil && prefix.Contains(addr) {
+		for _, prefix := range reservedIPv4Prefixes {
+			if prefix.Contains(addr) {
 				return true
 			}
 		}

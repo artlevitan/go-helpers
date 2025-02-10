@@ -1,4 +1,4 @@
-# go-helpers ![Coverage](https://img.shields.io/badge/Coverage-99.5%25-brightgreen)
+# go-helpers ![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen)
 
 Вспомогательные функции для Go.
 
