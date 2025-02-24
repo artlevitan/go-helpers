@@ -14,9 +14,9 @@ import (
 )
 
 const (
-	sqlDateLayout     = "2006-01-02"
-	sqlDateTimeLayout = "2006-01-02 15:04:05"
-	sqlTimeLayout     = "15:04:05"
+	sqlDateLayout     = time.DateOnly
+	sqlDateTimeLayout = time.DateTime
+	sqlTimeLayout     = time.TimeOnly
 )
 
 var (
