@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.18
+// v1.1.19
 
 package helpers
 
@@ -288,7 +288,7 @@ func TestCreateCacheKey(t *testing.T) {
 	}
 
 	type args struct {
-		in interface{}
+		in any
 	}
 	tests := []struct {
 		name string
@@ -319,15 +319,15 @@ func TestCreateCacheKey(t *testing.T) {
 		{"22", args{false}, "false"},
 		{"23", args{3.14159}, "3.14159"},
 		{"24", args{[]bool{true, false, true}}, `[true,false,true]`},
-		{"25", args{map[string]interface{}{"a": 1, "b": "two", "c": 3.0}}, `{"a":1,"b":"two","c":3}`},
-		{"26", args{map[string]interface{}{"outer": map[string]interface{}{"inner": "value"}}}, `{"outer":{"inner":"value"}}`},
+		{"25", args{map[string]any{"a": 1, "b": "two", "c": 3.0}}, `{"a":1,"b":"two","c":3}`},
+		{"26", args{map[string]any{"outer": map[string]any{"inner": "value"}}}, `{"outer":{"inner":"value"}}`},
 		{"27", args{[3]int{1, 2, 3}}, "[1,2,3]"},
 		{"28", args{func() *int { i := 42; return &i }()}, "42"},
 		{"29", args{func() *Person { return &Person{Name: "Alice", Age: 25} }()}, `{"Name":"Alice","Age":25}`},
 		{"30", args{complex(1, 2)}, "error:json: unsupported type: complex128"},
 		{"31", args{[][]int{{1, 2}, {3, 4}}}, "[[1,2],[3,4]]"},
 		{"32", args{[]Person{{Name: "Bob", Age: 30}, {Name: "Charlie", Age: 25}}}, `[{"Name":"Bob","Age":30},{"Name":"Charlie","Age":25}]`},
-		{"33", args{interface{}(Person{Name: "Diana", Age: 28})}, `{"Name":"Diana","Age":28}`},
+		{"33", args{any(Person{Name: "Diana", Age: 28})}, `{"Name":"Diana","Age":28}`},
 		{"34", args{float32(2.71828)}, "2.71828"},
 		{"35", args{[]float64{1.1, 2.2, 3.3}}, `[1.1,2.2,3.3]`},
 	}

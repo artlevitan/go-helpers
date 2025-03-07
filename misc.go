@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.18
+// v1.1.19
 
 package helpers
 
@@ -106,7 +106,7 @@ func ComparePasswords(hashedPassword, plainPassword string) bool {
 }
 
 // CreateCacheKey создает текстовый ключ для кеширования, обрабатывая различные типы данных внутри одной функции.
-func CreateCacheKey(input interface{}) string {
+func CreateCacheKey(input any) string {
 	if input == nil {
 		return "nil"
 	}

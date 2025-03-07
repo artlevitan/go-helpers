@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.18
+// v1.1.19
 
 package helpers
 
@@ -125,7 +125,7 @@ func IsPrivateOrReservedIP(ip string) bool {
 
 // IsJSON проверяет, является ли строка валидным JSON.
 func IsJSON(s string) (bool, error) {
-	var js interface{}
+	var js any
 	err := json.Unmarshal([]byte(s), &js)
 	if err != nil {
 		return false, err
