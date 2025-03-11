@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.19
+// v1.2.0
 
 package helpers
 
@@ -12,6 +12,7 @@ import (
 	"math"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -38,12 +39,7 @@ func ByteCountSI(byteSize int64) string {
 
 // ItemExists проверяет, существует ли элемент в срезе.
 func ItemExists[T comparable](slice []T, item T) bool {
-	for _, element := range slice {
-		if element == item {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(slice, item)
 }
 
 // FileExists проверяет, существует ли файл и не является ли он директорией.
@@ -131,7 +127,7 @@ func CreateCacheKey(input any) string {
 	case []int, []int8, []int16, []int32, []int64,
 		[]uint, []uint16, []uint32, []uint64:
 		rv := reflect.ValueOf(v)
-		for i := 0; i < rv.Len(); i++ {
+		for i := range rv.Len() {
 			elem := rv.Index(i).Interface()
 			_, _ = fmt.Fprintf(&sb, "%d", elem)
 		}

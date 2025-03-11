@@ -1,13 +1,18 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.19
+// v1.2.0
 
 package helpers
 
 import (
 	"testing"
 )
+
+// ptr возвращает указатель на переданную строку.
+func ptr(s string) *string {
+	return &s
+}
 
 func TestCutString(t *testing.T) {
 	type args struct {
@@ -365,6 +370,464 @@ func TestRemoveEmojis(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := RemoveEmojis(tt.args.s); got != tt.want {
 				t.Errorf("RemoveEmojis() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestClearPhone(t *testing.T) {
+	type args struct {
+		text string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Пустая строка",
+			args: args{text: ""},
+			want: "",
+		},
+		{
+			name: "Простые цифры",
+			args: args{text: "123456789"},
+			want: "123456789",
+		},
+		{
+			name: "Русский номер с форматированием",
+			args: args{text: "+7 (912) 345-67-89"},
+			want: "79123456789",
+		},
+		{
+			name: "Номер РФ с 8",
+			args: args{text: "8 (912) 3456789"},
+			want: "89123456789",
+		},
+		{
+			name: "Номер с текстом",
+			args: args{text: "Тел: +7 (912) 345-67-89"},
+			want: "79123456789",
+		},
+		{
+			name: "Номер с добавочным",
+			args: args{text: "+7 (912) 345-67-89 доб.123"},
+			want: "79123456789123",
+		},
+		{
+			name: "Длинный номер, превышающий 25 цифр",
+			args: args{text: "123456789012345678901234567890"},
+			want: "1234567890123456789012345",
+		},
+		{
+			name: "Номер с ведущими нулями",
+			args: args{text: "00001234"},
+			want: "00001234",
+		},
+		{
+			name: "Номер с буквами между цифрами",
+			args: args{text: "abc7d8e9f0"},
+			want: "7890",
+		},
+		{
+			name: "Номер с пробелами и дефисами",
+			args: args{text: "7 912 345 67 89"},
+			want: "79123456789",
+		},
+		{
+			name: "Номер с тире",
+			args: args{text: "+7-912-345-67-89"},
+			want: "79123456789",
+		},
+		{
+			name: "Номер с пробелами вокруг",
+			args: args{text: " +7 912 345 67 89 "},
+			want: "79123456789",
+		},
+		{
+			name: "Номер со спецсимволами",
+			args: args{text: "7 (9)1-2+3*4/5:6;7,8.9"},
+			want: "79123456789",
+		},
+		{
+			name: "Номер ровно 25 цифр",
+			args: args{text: "1234567890123456789012345"},
+			want: "1234567890123456789012345",
+		},
+		{
+			name: "Международный номер (не РФ)",
+			args: args{text: "+44 20 7946 0958"},
+			want: "442079460958",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ClearPhone(tt.args.text); got != tt.want {
+				t.Errorf("ClearPhone() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestClearEmail(t *testing.T) {
+	type args struct {
+		email string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Пустая строка",
+			args: args{email: ""},
+			want: "",
+		},
+		{
+			name: "Простой email",
+			args: args{email: "user@example.com"},
+			want: "user@example.com",
+		},
+		{
+			name: "Email с пробелами",
+			args: args{email: " user@example.com "},
+			want: "user@example.com",
+		},
+		{
+			name: "Email с именем",
+			args: args{email: "John Doe <john.doe@example.com>"},
+			want: "john.doe@example.com",
+		},
+		{
+			name: "Email с поддоменом",
+			args: args{email: "user@mail.example.co.uk"},
+			want: "user@mail.example.co.uk",
+		},
+		{
+			name: "Email с плюсом",
+			args: args{email: "user+tag@example.com"},
+			want: "user+tag@example.com",
+		},
+		{
+			name: "Email с дефисом и подчеркиванием",
+			args: args{email: "user-name_123@example.com"},
+			want: "user-name_123@example.com",
+		},
+		{
+			name: "Неправильный email без @",
+			args: args{email: "userexample.com"},
+			want: "",
+		},
+		{
+			name: "Неправильный email с некорректным доменом",
+			args: args{email: "user@.com"},
+			want: "",
+		},
+		{
+			name: "Неправильный email с двумя @",
+			args: args{email: "user@@example.com"},
+			want: "",
+		},
+		{
+			name: "Email со слэшами",
+			args: args{email: "customer/department=shipping@example.com"},
+			want: "customer/department=shipping@example.com",
+		},
+		{
+			name: "Email с завершающей точкой в домене",
+			args: args{email: "user@example.com."},
+			want: "",
+		},
+		{
+			name: "Email с лишними пробелами между символами",
+			args: args{email: "user  @example.com"},
+			want: "",
+		},
+		{
+			name: "Email с апострофом",
+			args: args{email: "o'reilly@example.com"},
+			want: "o'reilly@example.com",
+		},
+		{
+			name: "Email с именем в кавычках",
+			args: args{email: "\"Jane Doe\" <jane.doe@example.org>"},
+			want: "jane.doe@example.org",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := ClearEmail(tt.args.email); got != tt.want {
+				t.Errorf("ClearEmail() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCapitalize(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Пустая строка",
+			args: args{s: ""},
+			want: "",
+		},
+		{
+			name: "Русское слово, все буквы в нижнем регистре",
+			args: args{s: "привет"},
+			want: "Привет",
+		},
+		{
+			name: "Русское слово, все буквы в верхнем регистре",
+			args: args{s: "ПРИВЕТ"},
+			want: "Привет",
+		},
+		{
+			name: "Русское слово, смешанный регистр",
+			args: args{s: "зДРАВСТВУЙ"},
+			want: "Здравствуй",
+		},
+		{
+			name: "Английское слово, все буквы в нижнем регистре",
+			args: args{s: "english"},
+			want: "English",
+		},
+		{
+			name: "Английское слово, все буквы в верхнем регистре",
+			args: args{s: "ENGLISH"},
+			want: "English",
+		},
+		{
+			name: "Английское слово, смешанный регистр",
+			args: args{s: "tEst"},
+			want: "Test",
+		},
+		{
+			name: "Строка, начинающаяся с цифры",
+			args: args{s: "123abc"},
+			want: "123abc",
+		},
+		{
+			name: "Русское слово с буквой ё",
+			args: args{s: "ёлка"},
+			want: "Ёлка",
+		},
+		{
+			name: "Строка с небуквенным символом в начале",
+			args: args{s: "#пример"},
+			want: "#пример",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Capitalize(tt.args.s); got != tt.want {
+				t.Errorf("Capitalize() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCreateInitials(t *testing.T) {
+	type args struct {
+		rSurname    string
+		rName       string
+		rPatronymic *string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "Русский полный ФИО с отчеством",
+			args: args{
+				rSurname:    "иванов",
+				rName:       "алексей",
+				rPatronymic: ptr("иванович"),
+			},
+			want: "Иванов А.И.",
+		},
+		{
+			name: "Русский ФИО с пустым отчеством",
+			args: args{
+				rSurname:    "петров",
+				rName:       "сергей",
+				rPatronymic: ptr(""),
+			},
+			want: "Петров С.",
+		},
+		{
+			name: "Русский ФИО без отчества (nil)",
+			args: args{
+				rSurname:    "сидоров",
+				rName:       "михаил",
+				rPatronymic: nil,
+			},
+			want: "Сидоров М.",
+		},
+		{
+			name: "Английский ФИО без отчества",
+			args: args{
+				rSurname:    "doe",
+				rName:       "john",
+				rPatronymic: nil,
+			},
+			want: "Doe J.",
+		},
+		{
+			name: "Английский ФИО с отчеством",
+			args: args{
+				rSurname:    "smith",
+				rName:       "mary",
+				rPatronymic: ptr("ann"),
+			},
+			want: "Smith M.A.",
+		},
+		{
+			name: "Французский ФИО с отчеством",
+			args: args{
+				rSurname:    "dupont",
+				rName:       "éloise",
+				rPatronymic: ptr("charles"),
+			},
+			want: "Dupont É.C.",
+		},
+		{
+			name: "Турецкий ФИО с отчеством",
+			args: args{
+				rSurname:    "öztürk",
+				rName:       "ahmet",
+				rPatronymic: ptr("mehmet"),
+			},
+			want: "Öztürk A.M.",
+		},
+		{
+			name: "Немецкий ФИО без отчества",
+			args: args{
+				rSurname:    "müller",
+				rName:       "jürgen",
+				rPatronymic: nil,
+			},
+			want: "Müller J.",
+		},
+		{
+			name: "Греческий ФИО с отчеством",
+			args: args{
+				rSurname:    "παπαδόπουλος",
+				rName:       "νίκος",
+				rPatronymic: ptr("γεωργίου"),
+			},
+			want: "Παπαδόπουλος Ν.Γ.",
+		},
+		{
+			name: "Китайский ФИО без отчества",
+			args: args{
+				rSurname:    "李",
+				rName:       "小龙",
+				rPatronymic: nil,
+			},
+			want: "李 小.",
+		},
+		{
+			name: "Английский ФИО (все буквы в верхнем регистре)",
+			args: args{
+				rSurname:    "IVANOV",
+				rName:       "ALEXEY",
+				rPatronymic: ptr("IVANOVICH"),
+			},
+			want: "Ivanov A.I.",
+		},
+		{
+			name: "Украинский ФИО",
+			args: args{
+				rSurname:    "шевченко",
+				rName:       "тарас",
+				rPatronymic: ptr("григорович"),
+			},
+			want: "Шевченко Т.Г.",
+		},
+		{
+			name: "ФИО с однобуквенной фамилией",
+			args: args{
+				rSurname:    "k",
+				rName:       "lisa",
+				rPatronymic: ptr("marie"),
+			},
+			want: "K L.M.",
+		},
+		{
+			name: "ФИО с фамилией, содержащей смешанный регистр",
+			args: args{
+				rSurname:    "McDonald",
+				rName:       "robert",
+				rPatronymic: nil,
+			},
+			want: "Mcdonald R.",
+		},
+		{
+			name: "ФИО с дефисной фамилией",
+			args: args{
+				rSurname:    "sato-tanaka",
+				rName:       "kenji",
+				rPatronymic: ptr("taro"),
+			},
+			want: "Sato-tanaka K.T.",
+		},
+		{
+			name: "ФИО с числовыми строками",
+			args: args{
+				rSurname:    "123",
+				rName:       "456",
+				rPatronymic: ptr("789"),
+			},
+			want: "123 4.7.",
+		},
+		{
+			name: "ФИО с апострофом в фамилии",
+			args: args{
+				rSurname:    "o'neill",
+				rName:       "shaun",
+				rPatronymic: ptr("patrick"),
+			},
+			want: "O'neill S.P.",
+		},
+		{
+			name: "Испанский ФИО с ударением в фамилии",
+			args: args{
+				rSurname:    "garcía",
+				rName:       "miguel",
+				rPatronymic: nil,
+			},
+			want: "García M.",
+		},
+		{
+			name: "ФИО с именем в смешанном регистре",
+			args: args{
+				rSurname:    "RoBertsOn",
+				rName:       "ElIzAbeTh",
+				rPatronymic: ptr("anDrEw"),
+			},
+			want: "Robertson E.A.",
+		},
+		{
+			name: "ФИО с однобуквенным именем",
+			args: args{
+				rSurname:    "a",
+				rName:       "b",
+				rPatronymic: nil,
+			},
+			want: "A B.",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := CreateInitials(tt.args.rSurname, tt.args.rName, tt.args.rPatronymic); got != tt.want {
+				t.Errorf("CreateInitials() = %v, want %v", got, tt.want)
 			}
 		})
 	}

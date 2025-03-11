@@ -1,18 +1,20 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.1.19
+// v1.2.0
 
 package helpers
 
 import (
-	"math/rand"
+	"crypto/rand"
+	"math/big"
 	"strconv"
 	"time"
 
 	"github.com/google/uuid"
 )
 
+// Определения констант для набора символов
 const (
 	Digits                   = iota // Только цифры
 	Lowercase                       // Только строчные буквы
@@ -48,17 +50,18 @@ func RandomSHA512() string {
 }
 
 // RandomInt возвращает случайное целое число в диапазоне от min до max включительно.
+// При ошибке возвращается 0.
 func RandomInt(min, max int) int {
 	// Проверяем и меняем местами min и max, если нужно
 	if min > max {
 		min, max = max, min
 	}
-
-	// Инициализируем источник случайных чисел
-	rand.NewSource(time.Now().UnixNano())
-
-	// Генерируем случайное число в заданном диапазоне
-	return rand.Intn(max-min+1) + min
+	diff := max - min + 1
+	n, err := rand.Int(rand.Reader, big.NewInt(int64(diff)))
+	if err != nil {
+		return 0
+	}
+	return min + int(n.Int64())
 }
 
 // RandomUUID возвращает случайный UUID.
@@ -67,6 +70,7 @@ func RandomUUID() string {
 }
 
 // RandomString возвращает случайную строку заданной длины из выбранного набора символов.
+// При ошибке возвращается пустая строка.
 func RandomString(length int, charSetType int) string {
 	// Проверяем, что длина больше 0
 	if length <= 0 {
@@ -100,13 +104,14 @@ func RandomString(length int, charSetType int) string {
 		availableChars = append(letters, append(digits, specials...)...)
 	}
 
-	// Инициализируем источник случайных чисел
-	rand.NewSource(time.Now().UnixNano())
-
 	// Создаем слайс для хранения случайных символов
 	buf := make([]rune, length)
 	for i := range buf {
-		buf[i] = availableChars[rand.Intn(len(availableChars))]
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(availableChars))))
+		if err != nil {
+			return ""
+		}
+		buf[i] = availableChars[n.Int64()]
 	}
 	return string(buf)
 }
