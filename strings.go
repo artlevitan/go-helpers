@@ -1,12 +1,13 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.2.0
+// v1.2.1
 
 package helpers
 
 import (
 	"net/mail"
+	"net/url"
 	"regexp"
 	"strings"
 	"unicode"
@@ -111,7 +112,7 @@ func RemoveEmojis(s string) string {
 	return ClearString(s)
 }
 
-// ClearPhone форматирует номер телефона и результат обрезается до 25 символов
+// ClearPhone форматирует номер телефона и результат обрезается до 25 символов.
 func ClearPhone(text string) string {
 	digits := FilterDigits(text)
 	return CutString(digits, 25)
@@ -129,22 +130,22 @@ func ClearEmail(email string) string {
 
 // Capitalize приводит строку s к формату: первая буква — в верхнем регистре, остальные — в нижнем.
 func Capitalize(s string) string {
-	// Если строка пустая, возвращаем ее без изменений.
+	// Если строка пустая, возвращаем ее без изменений
 	if s == "" {
 		return s
 	}
 
-	// Преобразуем строку в срез рун для корректной работы с символами Unicode.
+	// Преобразуем строку в срез рун для корректной работы с символами Unicode
 	runes := []rune(s)
 
 	// Создаем strings.Builder
 	var b strings.Builder
 	b.Grow(len(runes))
 
-	// Преобразуем первую руну (символ) к верхнему регистру и записываем в билдер.
+	// Преобразуем первую руну (символ) к верхнему регистру и записываем в билдер
 	b.WriteRune(unicode.ToUpper(runes[0]))
 
-	// Обрабатываем все оставшиеся руны, преобразуя их к нижнему регистру.
+	// Обрабатываем все оставшиеся руны, преобразуя их к нижнему регистру
 	for _, r := range runes[1:] {
 		b.WriteRune(unicode.ToLower(r))
 	}
@@ -154,24 +155,33 @@ func Capitalize(s string) string {
 
 // CreateInitials приводит Фамилию Имя Отчество к формату "Фамилия И.О."
 func CreateInitials(rSurname, rName string, rPatronymic *string) string {
-	// Приводим фамилию к корректному регистру с помощью функции Capitalize.
+	// Приводим фамилию к корректному регистру с помощью функции Capitalize
 	surname := Capitalize(rSurname)
 
 	// Создаем strings.Builder
 	var b strings.Builder
-	b.WriteString(surname) // Добавляем фамилию.
-	b.WriteString(" ")     // Добавляем пробел между фамилией и инициалами.
+	b.WriteString(surname) // Добавляем фамилию
+	b.WriteString(" ")     // Добавляем пробел между фамилией и инициалами
 
-	// Добавляем первую букву имени, приводя её к верхнему регистру.
+	// Добавляем первую букву имени, приводя её к верхнему регистру
 	b.WriteString(strings.ToUpper(CutString(rName, 1)))
 	b.WriteString(".") // Завершаем инициалы имени точкой.
 
 	// Если отчество передано и не является пустой строкой,
-	// добавляем его первую букву, также приводя к верхнему регистру.
+	// добавляем его первую букву, также приводя к верхнему регистру
 	if rPatronymic != nil && *rPatronymic != "" {
 		b.WriteString(strings.ToUpper(CutString(*rPatronymic, 1)))
-		b.WriteString(".") // Завершаем инициалы отчества точкой.
+		b.WriteString(".") // Завершаем инициалы отчества точкой
 	}
 
 	return b.String()
+}
+
+// NormalizeFilename принимает имя файла и возвращает его URL-совместимое представление.
+func NormalizeFilename(filename string) string {
+	// Заменяем пробелы на нижнее подчеркивание
+	filename = strings.ReplaceAll(filename, " ", "_")
+
+	// Экранируем строку для безопасного использования в URL
+	return url.PathEscape(filename)
 }

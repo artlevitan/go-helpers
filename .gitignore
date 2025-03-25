@@ -19,3 +19,4 @@
 # Folders
 .idea/
 .vscode/
+.ansible/

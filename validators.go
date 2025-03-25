@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.2.0
+// v1.2.1
 
 package helpers
 
@@ -41,7 +41,7 @@ func IsSQLDate(d string) bool {
 	if !isSQLDatePattern.MatchString(d) {
 		return false
 	}
-	// Разбор строки с использованием константного формата.
+	// Разбор строки с использованием константного формата
 	_, err := time.Parse(sqlDateLayout, d)
 	return err == nil
 }
@@ -100,18 +100,18 @@ func IsPrivateOrReservedIP(ip string) bool {
 		return false
 	}
 
-	// Используем встроенные методы netip.Addr для базовой проверки.
+	// Используем встроенные методы netip.Addr для базовой проверки
 	if addr.IsPrivate() || addr.IsLoopback() || addr.IsUnspecified() ||
 		addr.IsMulticast() || addr.IsLinkLocalUnicast() {
 		return true
 	}
 
-	// Для IPv6: проверка диапазона документации 2001:db8::/32.
+	// Для IPv6: проверка диапазона документации 2001:db8::/32
 	if addr.Is6() && docIPv6Prefix.Contains(addr) {
 		return true
 	}
 
-	// Для IPv4: проверка диапазонов документации.
+	// Для IPv4: проверка диапазонов документации
 	if addr.Is4() {
 		for _, prefix := range reservedIPv4Prefixes {
 			if prefix.Contains(addr) {

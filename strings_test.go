@@ -1,7 +1,7 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.2.0
+// v1.2.1
 
 package helpers
 
@@ -828,6 +828,75 @@ func TestCreateInitials(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := CreateInitials(tt.args.rSurname, tt.args.rName, tt.args.rPatronymic); got != tt.want {
 				t.Errorf("CreateInitials() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNormalizeFilename(t *testing.T) {
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "ASCII без экранирования",
+			args: args{filename: "example.txt"},
+			want: "example.txt",
+		},
+		{
+			name: "Кириллица",
+			args: args{filename: "Пример файла.txt"},
+			want: "%D0%9F%D1%80%D0%B8%D0%BC%D0%B5%D1%80_%D1%84%D0%B0%D0%B9%D0%BB%D0%B0.txt",
+		},
+		{
+			name: "Пробелы в имени файла",
+			args: args{filename: "my file with spaces.txt"},
+			want: "my_file_with_spaces.txt",
+		},
+		{
+			name: "Специальные символы",
+			args: args{filename: "file@name!.txt"},
+			want: "file@name%21.txt",
+		},
+		{
+			name: "Пустая строка",
+			args: args{filename: ""},
+			want: "",
+		},
+		{
+			name: "Зарезервированные символы",
+			args: args{filename: "file#name?.txt"},
+			want: "file%23name%3F.txt",
+		},
+		{
+			name: "Японские символы",
+			args: args{filename: "ファイル名.txt"},
+			want: "%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D.txt",
+		},
+		{
+			name: "Несколько пробелов",
+			args: args{filename: "a b c.txt"},
+			want: "a_b_c.txt",
+		},
+		{
+			name: "Строка, похожая на URL",
+			args: args{filename: "http://example.com/file.txt"},
+			want: "http:%2F%2Fexample.com%2Ffile.txt",
+		},
+		{
+			name: "Допустимые символы: нижнее подчеркивание и тильда",
+			args: args{filename: "file_name~.txt"},
+			want: "file_name~.txt",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NormalizeFilename(tt.args.filename); got != tt.want {
+				t.Errorf("NormalizeFilename() = %v, want %v", got, tt.want)
 			}
 		})
 	}
