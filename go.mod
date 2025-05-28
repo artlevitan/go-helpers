@@ -4,7 +4,7 @@ go 1.24
 
 require (
 	github.com/google/uuid v1.6.0
-	golang.org/x/crypto v0.36.0
+	golang.org/x/crypto v0.38.0
 )
 
-require golang.org/x/sys v0.31.0 // indirect
+require golang.org/x/sys v0.33.0 // indirect

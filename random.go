@@ -1,12 +1,13 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.2.1
+// v1.2.2
 
 package helpers
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 	"strconv"
 	"time"
@@ -114,4 +115,24 @@ func RandomString(length int, charSetType int) string {
 		buf[i] = availableChars[n.Int64()]
 	}
 	return string(buf)
+}
+
+// RandomCode генерирует случайный числовой код длины length.
+// Если при чтении из крипто-генератора возникнет ошибка, возвращается пустая строка.
+func RandomCode(length int) string {
+	// Проверяем, что длина больше 0
+	if length <= 0 {
+		return ""
+	}
+
+	// Вычисляем 10^length как верхнюю границу (не включая)
+	max := new(big.Int).Exp(big.NewInt(10), big.NewInt(int64(length)), nil)
+	n, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		return ""
+	}
+
+	// Форматируем с ведущими нулями: "%0Nd", где N = length
+	format := fmt.Sprintf("%%0%dd", length)
+	return fmt.Sprintf(format, n)
 }

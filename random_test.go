@@ -1,11 +1,12 @@
 // Copyright 2023-2025, Appercase LLC. All rights reserved.
 // https://www.appercase.ru/
 //
-// v1.2.1
+// v1.2.2
 
 package helpers
 
 import (
+	"fmt"
 	"testing"
 	"unicode"
 
@@ -271,4 +272,57 @@ func containsRune(str string, r rune) bool {
 		}
 	}
 	return false
+}
+
+func TestRandomCodeEdgeCases(t *testing.T) {
+	cases := []struct {
+		length    int
+		wantEmpty bool
+	}{
+		{length: -5, wantEmpty: true},
+		{length: 0, wantEmpty: true},
+		{length: 1, wantEmpty: false},
+		{length: 5, wantEmpty: false},
+		{length: 10, wantEmpty: false},
+	}
+
+	for _, tc := range cases {
+		t.Run(
+			fmt.Sprintf("length=%d", tc.length),
+			func(t *testing.T) {
+				got := RandomCode(tc.length)
+				if tc.wantEmpty {
+					if got != "" {
+						t.Errorf("RandomCode(%d) = %q; want empty string", tc.length, got)
+					}
+					return
+				}
+				// Длина должна совпадать
+				if len(got) != tc.length {
+					t.Errorf("RandomCode(%d) length = %d; want %d", tc.length, len(got), tc.length)
+				}
+				// Все символы — цифры
+				for i, r := range got {
+					if !unicode.IsDigit(r) {
+						t.Errorf("RandomCode(%d)[%d] = %q; want digit", tc.length, i, r)
+					}
+				}
+			},
+		)
+	}
+}
+
+func TestRandomCodeVariability(t *testing.T) {
+	const length = 5
+	seen := make(map[string]struct{})
+	const iterations = 1000
+
+	for i := 0; i < iterations; i++ {
+		code := RandomCode(length)
+		seen[code] = struct{}{}
+	}
+	// Ожидаем, что хотя бы несколько кодов различаются
+	if len(seen) < 10 {
+		t.Errorf("RandomCode(%d) variability too low: only %d unique codes out of %d calls", length, len(seen), iterations)
+	}
 }
