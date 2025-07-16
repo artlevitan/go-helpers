@@ -67,7 +67,11 @@ func RandomInt(min, max int) int {
 
 // RandomUUID возвращает случайный UUID.
 func RandomUUID() string {
-	return uuid.NewString()
+	val, err := uuid.NewV7()
+	if err != nil {
+		val = uuid.New()
+	}
+	return val.String()
 }
 
 // RandomString возвращает случайную строку заданной длины из выбранного набора символов.
